@@ -75,7 +75,7 @@ const Login = () => {
         {/* Logo on top left */}
         <div className="w-1/3 py-5">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-16 cursor-pointer" />
+            <img src={assets.logo} alt="Logo" className="h-10 cursor-pointer" />
           </Link>
         </div>
         {/* Form in the center */}

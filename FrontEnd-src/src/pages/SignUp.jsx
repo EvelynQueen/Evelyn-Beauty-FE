@@ -18,23 +18,23 @@ const Singup = () => {
   const onSubmit = async (data) => {
     const res = await handleRegister(data);
     if (res.success) {
-      toast.success(
-        "Registration successful! Please check your email to verify your account."
-      );
-      navigate("/verify-email", { replace: true });
+      navigate("/verify-email", {
+        replace: true,
+        state: { email: data.email },
+      });
     } else {
       switch (res.status) {
         case 409:
           toast.error("Email already exists");
           break;
         case 400:
-          toast.error(res.message || "Invalid data, please check your inputs");
+          toast.error("Invalid data, please check your inputs");
           break;
         case 0:
           toast.error("Network error, please try again");
           break;
         default:
-          toast.error(res.message || "Something went wrong, please try again");
+          toast.error("Something went wrong, please try again");
       }
     }
   };
@@ -51,9 +51,9 @@ const Singup = () => {
       {/* Right side form */}
       <div className="h-screen flex-1 flex flex-col">
         {/* Logo on top left */}
-        <div className="w-1/3 py-5">
+        <div className="w-1/2 py-5">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-16 cursor-pointer" />
+            <img src={assets.logo} alt="Logo" className="h-10 cursor-pointer" />
           </Link>
         </div>
         {/* Form in the center */}
@@ -64,6 +64,25 @@ const Singup = () => {
           >
             <h2 className="text-3xl font-bold text-center py-10">Sign Up</h2>
 
+            {/* Name input */}
+            <div className="flex flex-col gap-1 mb-4">
+              <label htmlFor="name" className="text-sm font-medium">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter Full Name"
+                {...register("name", {
+                  required: "This field is required!",
+                })}
+                className="border p-2 rounded w-full"
+              />
+              {formErrors.name && (
+                <p className="text-red-500 text-sm">
+                  {formErrors.name.message}
+                </p>
+              )}
+            </div>
             {/* Email input */}
             <div className="flex flex-col gap-1 mb-4">
               <label htmlFor="email" className="text-sm font-medium">
@@ -115,31 +134,13 @@ const Singup = () => {
               )}
             </div>
 
-            {/* Name input */}
-            <div className="flex flex-col gap-1 mb-4">
-              <label htmlFor="name" className="text-sm font-medium">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter Full Name"
-                {...register("name", {
-                  required: "This field is required!",
-                })}
-                className="border p-2 rounded w-full"
-              />
-              {formErrors.name && (
-                <p className="text-red-500 text-sm">
-                  {formErrors.name.message}
-                </p>
-              )}
-            </div>
+            {/* Sign up button */}
             <button
               type="submit"
               disabled={isSubmitting}
               className="bg-black text-white p-2 w-full rounded-2xl mt-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300"
             >
-              {isSubmitting ? "Creating account..." : "Sign Up"}
+              {isSubmitting ? "Signing up..." : "Sign Up"}
             </button>
           </form>
         </div>

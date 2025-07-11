@@ -90,7 +90,7 @@ const Cart = () => {
                       {Number(item.product.price).toLocaleString()}
                     </div>
 
-                    <div className="basis-1/6">
+                    <div className="basis-1/6 flex justify-center">
                       <QuantityButton quantity={item.quantity} />
                     </div>
 

@@ -24,6 +24,7 @@ import pro7 from "./pro7.svg";
 import defaultImage from "./default.jpg";
 import OS_icon from "./OS_icon.png";
 import signup from "./signup.jpg";
+import verifyEmail from "./email-verify.png";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -51,4 +52,5 @@ export const assets = {
   defaultImage,
   OS_icon,
   signup,
+  verifyEmail,
 };

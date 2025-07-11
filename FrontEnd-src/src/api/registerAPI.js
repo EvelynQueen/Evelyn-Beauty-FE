@@ -6,3 +6,8 @@ const registerAPI = async (data) => {
 };
 
 export default registerAPI;
+
+export const verifyAPI = async (data) => {
+  const res = await axios.post(`http://localhost:3000/auth/verify-otp`, data);
+  return res.data;
+};
