@@ -1,22 +1,19 @@
 // src/context/CartContext.tsx
-import { createContext, useEffect, useState } from "react";
-import { addToCartAPI, getCartAPI, getCartItemsAPI } from "../api/getCartAPI";
+import { createContext, useState } from "react";
+import { addToCartAPI, deleteCartItemAPI, getCartAPI } from "../api/getCartAPI";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartId, setCartId] = useState("");
-  const [cartCount, setCartCount] = useState(0);
+
   const handleGetCart = async () => {
     if (cartId) return cartId;
-
     try {
       const res = await getCartAPI();
-
       if (!res || res === "undefined") {
         return null;
       }
-
       setCartId(res);
       return res;
     } catch (error) {
@@ -29,7 +26,7 @@ export const CartProvider = ({ children }) => {
     const currentCartId = await handleGetCart();
 
     if (!currentCartId || currentCartId === "undefined") {
-      return "Error: Cart not found";
+      return "You've must login first!";
     }
 
     if (!productId || !classificationId || !quantity) {
@@ -40,31 +37,38 @@ export const CartProvider = ({ children }) => {
       await addToCartAPI(currentCartId, productId, classificationId, quantity);
       return null;
     } catch (error) {
-      console.log(error.response.data.message);
-      return "Error: Failed to add to cart";
+      if (error.response) {
+        switch (error.response.status) {
+          case 403:
+            return "You've must login first!";
+          case 400:
+            return "Error: Amount of product is not enough";
+          default:
+            return "Error: Failed to add to cart";
+        }
+      }
     }
   };
 
-  const handleGetCartCount = async () => {
+  const handleDeleteFromCart = async (productId, classificationId) => {
+    const currentCartId = await handleGetCart();
+    if (!currentCartId || currentCartId === "undefined") {
+      return "Error: Cart not found";
+    }
+
     try {
-      const items = await getCartItemsAPI();
-      const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
-      setCartCount(totalQuantity);
+      await deleteCartItemAPI(currentCartId, productId, classificationId);
+      return "Delete from cart successfully";
     } catch (error) {
-      console.error("Failed to fetch cart items:", error);
+      console.log(error.response?.data?.message);
     }
   };
-
-  useEffect(() => {
-    handleGetCartCount();
-  }, []);
 
   const value = {
     cartId,
     handleGetCart,
     handleAddToCart,
-    cartCount,
-    handleGetCartCount,
+    handleDeleteFromCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

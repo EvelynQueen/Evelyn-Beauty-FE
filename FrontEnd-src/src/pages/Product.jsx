@@ -33,7 +33,9 @@ const Product = () => {
     if (error) {
       toast.error(error);
     } else {
-      toast.success("Added  to cart successfully!");
+      toast.success("Added  to cart successfully!", {
+        autoClose: 1000,
+      });
     }
   };
 

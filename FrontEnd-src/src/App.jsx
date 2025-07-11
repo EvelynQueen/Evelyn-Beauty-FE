@@ -15,7 +15,8 @@ import useAuth from "./hook/useAuth";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import Product from "./pages/Product";
 import StaffDashboard from "./pages/StaffDashboard";
-
+import SignUp from "./pages/SignUp";
+import VerifyEmail from "./pages/VerifyEmail";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -73,8 +74,7 @@ const protectedRoutes = [
 const App = () => {
   const { role, token } = useAuth();
   const location = useLocation();
-  // Location path that dont visible navbar
-  const hiddenNavBarRoutes = ["/login", "/signup"];
+  const hiddenNavBarRoutes = ["/login", "/signup", "/verify-email"];
   const hideNavBar = hiddenNavBarRoutes.includes(location.pathname);
 
   return (
@@ -93,6 +93,8 @@ const App = () => {
 
         {/* Login route */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         {/* Protected routes */}
         {protectedRoutes.map(({ path, element, roles }) => (

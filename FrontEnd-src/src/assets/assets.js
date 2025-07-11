@@ -22,6 +22,8 @@ import pro4 from "./pro4.png";
 import pro6 from "./pro6.svg";
 import pro7 from "./pro7.svg";
 import defaultImage from "./default.jpg";
+import OS_icon from "./OS_icon.png";
+import signup from "./signup.jpg";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -47,4 +49,6 @@ export const assets = {
   pro6,
   pro7,
   defaultImage,
+  OS_icon,
+  signup,
 };

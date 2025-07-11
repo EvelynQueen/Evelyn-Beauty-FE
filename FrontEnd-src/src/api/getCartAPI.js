@@ -5,31 +5,47 @@ export const getCartAPI = async () => {
   if (!accountId) throw new Error("No accountId found in localStorage");
 
   const response = await axios.post("/carts/getByAccount", { accountId });
-  console.log("Cart API response:", response.data);
 
-  return response.data.cartId; // ✅ đổi từ cartID sang cartId
+  return response.data.cartId;
 };
 
 export const getCartItemsAPI = async () => {
   const response = await axios.get("/cart-items");
-  console.log("Cart items API response:", response.data);
   return response.data;
 };
 
-export const addToCartAPI = (cartId, productId, classificationId, quantity) => {
+export const addToCartAPI = async (
+  cartId,
+  productId,
+  classificationId,
+  quantity
+) => {
   if (!cartId || !productId || !classificationId || !quantity) {
     throw new Error("addToCartAPI");
   }
-  console.log("Add to cart params:", {
+
+  const response = await axios.post("/cart-items/add", {
     cartId,
     productId,
     classificationId,
     quantity,
   });
-  return axios.post("/cart-items/add", {
-    cartId,
-    productId,
-    classificationId,
-    quantity,
+
+  return response.data;
+};
+
+export const deleteCartItemAPI = async (
+  cartId,
+  productId,
+  classificationId
+) => {
+  const response = await axios.delete("/cart-items/delete", {
+    data: {
+      cartId,
+      productId,
+      classificationId,
+    },
   });
+
+  return response.data;
 };

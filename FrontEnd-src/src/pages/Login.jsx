@@ -15,7 +15,6 @@ const Login = () => {
 
   const from = location.state?.from?.pathname || "/";
 
-  // Check if user was redirected due to session expiry
   useEffect(() => {
     const wasRedirected = sessionStorage.getItem("sessionExpired");
     if (wasRedirected) {
@@ -41,6 +40,7 @@ const Login = () => {
       const userRole = res.account.role;
       const accountId = res.account.accountId;
       login(accessToken, userRole, accountId);
+
       if (userRole === "OS") {
         navigate("/owner-dashboard", { replace: true });
       } else if (userRole === "SF" || userRole === "AD") {
@@ -142,6 +142,12 @@ const Login = () => {
             </button>
           </form>
         </div>
+        <Link to="/signup">
+          <p className="text-sm sm:text-base md:text-lg text-center mb-5">
+            Don't have an account?{" "}
+            <span className="text-blue-500 font-semibold">Sign up</span>
+          </p>
+        </Link>
       </div>
     </div>
   );

@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
-import { CiUser, CiShoppingCart, CiMenuBurger } from "react-icons/ci";
+import { CiUser, CiMenuBurger } from "react-icons/ci";
 import { IoIosArrowBack } from "react-icons/io";
 import useAuth from "../hook/useAuth";
-import useCart from "../hook/useCart";
-
+import CartIcon from "./CartIcon";
 const NavBar = () => {
   const { logout, role, token } = useAuth();
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-  const { cartCount } = useCart();
   const handleLogout = () => {
     toast.info("Logout Successful", {
       position: "top-right",
@@ -92,17 +90,7 @@ const NavBar = () => {
             </NavLink>
           )}
         </div>
-        {token && (
-          <Link
-            to="/cart"
-            className="relative hover:scale-105 transition-all duration-300"
-          >
-            <CiShoppingCart className="text-2xl cursor-pointer"></CiShoppingCart>
-            <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-              {cartCount}
-            </p>
-          </Link>
-        )}
+        {token && <CartIcon />}
       </div>
 
       {/* Navbar for <=sm screen */}

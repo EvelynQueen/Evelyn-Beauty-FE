@@ -10,7 +10,7 @@ const ProductItem = ({ productId, name, price, image }) => {
       to={`/products/${productId}`}
       className="cursor-pointer block rounded-xl hover:shadow-lg p-4 w-full h-full"
     >
-      <div className="overflow-hidden rounded-xl aspect-square">
+      <div className="overflow-hidden rounded-xl aspect-square border-2 border-gray-200">
         <img
           className="w-full h-full hover:scale-110 transition duration-200 object-cover"
           src={image && image.length > 0 ? image[0] : assets.defaultImage}
