@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div>
+    <div className="w-full">
       <hr className="bg-gray-400" />
       <div className="flex flex-col sm:grid grid-cols-[3fr_2fr] gap-14 my-10 mt-10 text-sm">
         <div>
@@ -25,12 +25,10 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div>
-        <hr className="bg-gray-400" />
-        <p className="py-5 text-sm text-center">
-          Copyright 2024@ EvelynBeauty.com - All Right Reserved
-        </p>
-      </div>
+      <hr className="bg-gray-400 mb-1" />
+      <p className="py-1 text-sm text-center text-white bg-black">
+        Copyright 2024@ EvelynBeauty.com - All Right Reserved
+      </p>
     </div>
   );
 };

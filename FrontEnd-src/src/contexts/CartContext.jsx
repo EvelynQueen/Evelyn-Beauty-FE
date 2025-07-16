@@ -1,12 +1,18 @@
 // src/context/CartContext.tsx
-import { createContext, useState } from "react";
-import { addToCartAPI, deleteCartItemAPI, getCartAPI } from "../api/getCartAPI";
+import { createContext, useMemo, useState } from "react";
+import {
+  addToCartAPI,
+  deleteCartItemAPI,
+  getCartAPI,
+  getCartItemsAPI,
+} from "../api/getCartAPI";
 
-export const CartContext = createContext();
+export const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
   const [cartId, setCartId] = useState("");
-
+  const [cartItems, setCartItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const handleGetCart = async () => {
     if (cartId) return cartId;
     try {
@@ -35,16 +41,16 @@ export const CartProvider = ({ children }) => {
 
     try {
       await addToCartAPI(currentCartId, productId, classificationId, quantity);
-      return null;
+      return { success: true, status: 200 };
     } catch (error) {
       if (error.response) {
-        switch (error.response.status) {
-          case 403:
-            return "You've must login first!";
-          case 400:
-            return "Error: Amount of product is not enough";
-          default:
-            return "Error: Failed to add to cart";
+        if (!error.response?.status) {
+          return { success: false, status: 0 };
+        } else {
+          return {
+            success: false,
+            status: error.status,
+          };
         }
       }
     }
@@ -64,11 +70,61 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const handleGetCartItems = async () => {
+    try {
+      const res = await getCartItemsAPI();
+      setCartItems(res.product);
+      return { success: true, status: 200 };
+    } catch (error) {
+      if (!error.response?.status) {
+        return { success: false, status: 0 };
+      } else {
+        return {
+          success: false,
+          status: error.status,
+        };
+      }
+    }
+  };
+
+  const selectedCartItems = useMemo(
+    () =>
+      cartItems.filter((item) =>
+        selectedItems.includes(item.product.productId)
+      ),
+    [cartItems, selectedItems]
+  );
+
+  const selectedCartItemsForDiscount = useMemo(
+    () =>
+      selectedCartItems.map((item) => ({
+        productId: item.product.productId,
+        classificationId: item.classification.classificationId,
+        quantity: item.quantity,
+      })),
+    [selectedCartItems]
+  );
+
+  const selectedTotal = useMemo(
+    () =>
+      selectedCartItems.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0
+      ),
+    [selectedCartItems]
+  );
+
   const value = {
     cartId,
     handleGetCart,
     handleAddToCart,
     handleDeleteFromCart,
+    cartItems,
+    handleGetCartItems,
+    selectedItems,
+    setSelectedItems,
+    selectedTotal,
+    selectedCartItemsForDiscount,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

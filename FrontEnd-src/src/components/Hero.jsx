@@ -21,7 +21,7 @@ const Hero = () => {
       {/* Hero right side */}
       <div className="w-full sm:w-1/2 flex items-center justify-center">
         <img
-          className="w-full h-auto object-contain max-h-[500px] sm:max-h-[600px] md:max-h-[700px] rounded-b-xl md:rounded-r-xl"
+          className="w-full h-auto object-contain max-h-[500px] sm:max-h-[600px] md:max-h-[700px] rounded-r-xl md:rounded-r-xl"
           src={assets.hero_home}
           alt="Hero_img"
         />

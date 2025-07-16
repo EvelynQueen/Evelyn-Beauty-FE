@@ -29,7 +29,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   const onSubmit = async (data) => {
@@ -65,21 +65,25 @@ const Login = () => {
     <div className="flex h-full">
       {/* Left side image */}
       <img
-        className="hidden lg:block lg:w-1/2 object-cover"
+        className="hidden lg:block lg:w-1/2 object-cover caret-transparent mr-10"
         src={assets.loginImg}
         alt="login visual"
       />
 
       {/* Right side form */}
-      <div className="h-screen flex-1 flex flex-col">
+      <div className="h-screen flex-1 flex flex-col justify-around">
         {/* Logo on top left */}
-        <div className="w-1/3 py-5">
+        <div className="w-1/3 pt-5">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-10 cursor-pointer" />
+            <img
+              src={assets.logo}
+              alt="Logo"
+              className="h-10 cursor-pointer caret-transparent"
+            />
           </Link>
         </div>
         {/* Form in the center */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center items-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full sm:w-sm md:w-md"
@@ -138,16 +142,16 @@ const Login = () => {
               type="submit"
               className="bg-black text-white p-2 w-full rounded-2xl mt-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300"
             >
-              Login
+              {isSubmitting ? "Logging in..." : "Log In"}
             </button>
           </form>
         </div>
-        <Link to="/signup">
-          <p className="text-sm sm:text-base md:text-lg text-center mb-5">
-            Don't have an account?{" "}
-            <span className="text-blue-500 font-semibold">Sign up</span>
-          </p>
-        </Link>
+        <p className="text-sm sm:text-base md:text-lg text-center mb-5">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-blue-500 font-semibold">
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );

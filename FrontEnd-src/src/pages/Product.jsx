@@ -25,17 +25,27 @@ const Product = () => {
   };
 
   const handleClick = async () => {
-    const error = await handleAddToCart(
+    const res = await handleAddToCart(
       productId,
       type.classificationId,
       quantity
     );
-    if (error) {
-      toast.error(error);
-    } else {
+    if (res.success) {
       toast.success("Added  to cart successfully!", {
         autoClose: 1000,
       });
+    } else {
+      switch (res.status) {
+        case 403:
+          toast.error("Don't have enough amount in stock");
+          break;
+        case 0:
+          toast.error("Something went wrong, please login again");
+          break;
+        default:
+          toast.error("Something went wrong, please login again");
+          break;
+      }
     }
   };
 

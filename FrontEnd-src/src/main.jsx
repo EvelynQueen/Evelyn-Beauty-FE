@@ -4,16 +4,24 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./contexts/AuthProvider.jsx";
 import ProductProvider from "./contexts/ProductProvider.jsx";
-import CartProvider from "./contexts/cartContext.jsx";
+import CartProvider from "./contexts/CartContext.jsx";
 import { RegisterProvider } from "./contexts/RegisterProvider.jsx";
-
+import { StaffProvider } from "./contexts/StaffContext.jsx";
+import { PaymentProvider } from "./contexts/PaymentContext.jsx";
+import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
       <RegisterProvider>
         <ProductProvider>
           <CartProvider>
-            <App />
+            <StaffProvider>
+              <ProfileProvider>
+                <PaymentProvider>
+                  <App />
+                </PaymentProvider>
+              </ProfileProvider>
+            </StaffProvider>
           </CartProvider>
         </ProductProvider>
       </RegisterProvider>

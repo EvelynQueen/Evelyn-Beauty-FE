@@ -46,6 +46,5 @@ export const deleteCartItemAPI = async (
       classificationId,
     },
   });
-
   return response.data;
 };

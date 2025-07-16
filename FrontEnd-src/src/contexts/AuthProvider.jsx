@@ -88,14 +88,12 @@ const AuthProvider = ({ children }) => {
               );
               break;
             default:
-              // Other errors - let components handle them
               break;
           }
           return Promise.reject(error);
         }
       );
 
-      // Cleanup interceptors on unmount
       return () => {
         try {
           axios.interceptors.request.eject(requestInterceptor);

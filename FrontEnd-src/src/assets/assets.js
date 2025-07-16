@@ -25,6 +25,10 @@ import defaultImage from "./default.jpg";
 import OS_icon from "./OS_icon.png";
 import signup from "./signup.jpg";
 import verifyEmail from "./email-verify.png";
+import user from "./user.png";
+import sale from "./hot-sale.png";
+import discount from "./discount.png";
+import oops from "./oops.png";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -53,4 +57,8 @@ export const assets = {
   OS_icon,
   signup,
   verifyEmail,
+  user,
+  sale,
+  discount,
+  oops,
 };

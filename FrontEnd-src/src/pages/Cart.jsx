@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { getCartItemsAPI } from "../api/getCartAPI";
+import { useEffect } from "react";
 import QuantityButton from "../components/QuantityButton";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoSadOutline } from "react-icons/io5";
@@ -8,25 +7,35 @@ import useAuth from "../hook/useAuth";
 import useCart from "../hook/useCart";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { assets } from "../assets/assets";
+import { IoIosArrowBack } from "react-icons/io";
+import { BiSolidCart } from "react-icons/bi";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
   const { token, accountId } = useAuth();
-  const { handleDeleteFromCart } = useCart();
-
+  const {
+    handleDeleteFromCart,
+    handleGetCartItems,
+    cartItems,
+    selectedItems,
+    setSelectedItems,
+    selectedTotal,
+  } = useCart();
+  const countProduct = cartItems.map((item) => item.product.productId).length;
   const fetchCartItems = async () => {
-    if (!token || !accountId) {
-      setCartItems([]);
-      return [];
-    }
-    try {
-      const response = await getCartItemsAPI();
-      setCartItems(response.product);
-      return response.product;
-    } catch (error) {
-      console.error("Failed to fetch cart items:", error);
-      setCartItems([]);
-      return [];
+    const res = await handleGetCartItems();
+    if (!res.success) {
+      switch (res.status) {
+        case 403:
+          toast.error("Session expired, please login again");
+          break;
+        case 0:
+          toast.error("Something went wrong, please login again");
+          break;
+        default:
+          toast.error("Something went wrong, please login again");
+          break;
+      }
     }
   };
 
@@ -45,16 +54,33 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    if (token && accountId) {
-      fetchCartItems();
-    } else {
-      setCartItems([]);
-    }
+    fetchCartItems();
   }, [token, accountId]);
 
   return (
     <div>
-      <div className="w-full flex flex-col h-full mb-20">
+      {/* Cart - items */}
+      <div className="w-full flex flex-col h-full mb-10">
+        {/* Back to previous page */}
+        <button
+          onClick={() => window.history.back()}
+          className="w-full flex flex-row justify-start items-center mb-5 caret-transparent cursor-pointer"
+        >
+          <IoIosArrowBack />
+          <p className="text-sm sm:text-base md:text-xl ml-2">Back</p>
+        </button>
+        <hr className="w-full bg-gray-500 mb-5 caret-transparent" />
+        {/* Title */}
+        <div className="w-full flex flex-col items-start justify-center mb-10">
+          <div className="w-full flex flex-row items-center justify-start gap-1 text-base md:text-xl caret-transparent">
+            <BiSolidCart />
+            <p>Cart</p>
+          </div>
+          <p className="text-sm md:text-base caret-transparent text-gray-600">
+            You're have {countProduct} items in your cart
+          </p>
+        </div>
+        {/* Cart-item */}
         <div className="flex flex-col gap-y-5 w-full h-full">
           {cartItems.length > 0 ? (
             cartItems.map((item, index) => (
@@ -75,6 +101,9 @@ const Cart = () => {
                     <div className="basis-1/6 text-center">Price</div>
                     <div className="basis-1/6 text-center">Quantity</div>
                     <div className="basis-1/6 text-center">Delete</div>
+                    <div className="basis-1/6 text-center text-transparent">
+                      Select
+                    </div>
                   </div>
 
                   {/* Item Info */}
@@ -108,6 +137,24 @@ const Cart = () => {
                       }}
                       className="basis-1/6 text-center text-red-500 cursor-pointer"
                     />
+
+                    {/* Selected checkbox */}
+                    <div className="basis-1/6 flex justify-center ">
+                      <input
+                        className="w-5 h-5 "
+                        type="checkbox"
+                        checked={selectedItems.includes(item.product.productId)}
+                        onChange={() => {
+                          setSelectedItems((prev) =>
+                            prev.includes(item.product.productId)
+                              ? prev.filter(
+                                  (id) => id !== item.product.productId
+                                )
+                              : [...prev, item.product.productId]
+                          );
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -126,6 +173,42 @@ const Cart = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Total cart */}
+      <div className="w-1/5 flex flex-row items-end justify-around mb-20 sticky bottom-5 bg-gray-700 text-white py-1 px-2 rounded-2xl">
+        <p className="font-bold text-base sm:text-xl md:text-2xl lg:text-3xl">
+          Total
+        </p>
+        <p className="text-sm sm:text-base md:text-xl lg:text-2xl">
+          {Number(selectedTotal).toLocaleString()}
+        </p>
+      </div>
+
+      {/* Order button */}
+      <div className="w-full">
+        {selectedItems.length > 0 ? (
+          <div className="w-full flex justify-end items-center gap-4 mb-20">
+            <img src={assets.sale} alt="sale icon" className="w-1/15" />
+            <p className="text:sm md:text-base lg:text-xl text-gray-600">
+              Unlock more{" "}
+              <span className="font-bold text-red-500">DISCOUNT</span> at
+            </p>
+            <Link
+              to="/shipping-information"
+              className="bg-black text-white px-4 py-2 text-sm sm:text-base md:text-lg rounded-md hover:scale-105 transition-transform duration-200"
+            >
+              Order
+            </Link>
+          </div>
+        ) : (
+          <p className="w-full flex justify-end items-center mb-20 gap-1 text-sm sm:text-base md:text-lg rounded-md text-gray-600">
+            Please select items to continue to{" "}
+            <span className="font-bold text-base md:text-xl lg:text-2xl">
+              Order
+            </span>
+          </p>
+        )}
       </div>
       <Footer />
     </div>

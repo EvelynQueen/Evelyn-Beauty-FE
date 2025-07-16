@@ -43,7 +43,7 @@ const Singup = () => {
     <div className="flex h-full">
       {/* left side image */}
       <img
-        className="hidden lg:block lg:w-1/2 object-cover"
+        className="hidden lg:block lg:w-1/2 object-cover caret-transparent mr-10"
         src={assets.signup}
         alt="signup visual"
       />
@@ -51,13 +51,17 @@ const Singup = () => {
       {/* Right side form */}
       <div className="h-screen flex-1 flex flex-col">
         {/* Logo on top left */}
-        <div className="w-1/2 py-5">
+        <div className="w-1/2 pt-5">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-10 cursor-pointer" />
+            <img
+              src={assets.logo}
+              alt="Logo"
+              className="h-10 cursor-pointer caret-transparent"
+            />
           </Link>
         </div>
         {/* Form in the center */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center items-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full sm:w-sm md:w-md"

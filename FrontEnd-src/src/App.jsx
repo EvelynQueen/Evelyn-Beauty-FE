@@ -17,6 +17,10 @@ import Product from "./pages/Product";
 import StaffDashboard from "./pages/StaffDashboard";
 import SignUp from "./pages/SignUp";
 import VerifyEmail from "./pages/VerifyEmail";
+import OsSideBar from "./components/OsSideBar";
+import StaffAccount from "./pages/StaffAccount";
+import Discount from "./pages/Discount";
+import ShippingProfile from "./pages/ShippingProfile";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -57,9 +61,23 @@ const protectedRoutes = [
   { path: "/profile", element: <Profile />, roles: ["CU"], token: true },
   { path: "/order", element: <Order />, roles: ["CU"], token: true },
   { path: "/cart", element: <Cart />, roles: ["CU"], token: true },
+  { path: "/discount", element: <Discount />, roles: ["CU"], token: true },
+  {
+    path: "/shipping-information",
+    element: <ShippingProfile />,
+    roles: ["CU"],
+    token: true,
+  },
+
   {
     path: "/owner-dashboard",
     element: <OwnerDashboard />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/staff-modifier",
+    element: <StaffAccount />,
     roles: ["OS"],
     token: true,
   },
@@ -71,47 +89,78 @@ const protectedRoutes = [
   },
 ];
 
+// routes that hide navbar
+const hiddenNavBarRoutes = ["/login", "/signup", "/verify-email"];
+
+// routes that show owner side bar
+const ownerRoutes = ["/owner-dashboard", "/staff-modifier"];
+
 const App = () => {
   const { role, token } = useAuth();
   const location = useLocation();
-  const hiddenNavBarRoutes = ["/login", "/signup", "/verify-email"];
   const hideNavBar = hiddenNavBarRoutes.includes(location.pathname);
+  const isOS =
+    token && role === "OS" && ownerRoutes.includes(location.pathname);
 
-  return (
-    <div className="h-screen px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
-      {!hideNavBar && (!token || !role || role === "CU") && <NavBar />}
+  if (isOS) {
+    return (
+      <div className="flex h-screen w-full justify-between">
+        <OsSideBar />
+        <div className="flex-1 overflow-y-auto p-4">
+          <Routes>
+            {protectedRoutes.map(({ path, element, roles }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <ProtectedRoute allowedRoles={roles}>
+                    {element}
+                  </ProtectedRoute>
+                }
+              />
+            ))}
+          </Routes>
+          <ToastContainer />
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="h-screen px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+        {!hideNavBar && (!token || !role || role === "CU") && <NavBar />}
 
-      <Routes>
-        {/* Public routes with role redirection */}
-        {publicRoutes.map(({ path, element }) => (
-          <Route
-            key={path}
-            path={path}
-            element={<RedirectIfRole>{element}</RedirectIfRole>}
-          />
-        ))}
+        <Routes>
+          {/* Public routes with role redirection */}
+          {publicRoutes.map(({ path, element }) => (
+            <Route
+              key={path}
+              path={path}
+              element={<RedirectIfRole>{element}</RedirectIfRole>}
+            />
+          ))}
 
-        {/* Login route */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+          {/* Login route */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Protected routes */}
-        {protectedRoutes.map(({ path, element, roles }) => (
-          <Route
-            key={path}
-            path={path}
-            element={
-              <ProtectedRoute allowedRoles={roles}>{element}</ProtectedRoute>
-            }
-          />
-        ))}
-      </Routes>
+          {/* Protected routes */}
+          {protectedRoutes.map(({ path, element, roles }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <ProtectedRoute allowedRoles={roles}>{element}</ProtectedRoute>
+              }
+            />
+          ))}
+        </Routes>
 
-      {/* Toast notifications */}
-      <ToastContainer />
-    </div>
-  );
+        {/* Toast notifications */}
+        <ToastContainer />
+      </div>
+    );
+  }
 };
 
 export default App;

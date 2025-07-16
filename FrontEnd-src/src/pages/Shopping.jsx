@@ -47,6 +47,8 @@ const Shopping = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
+      <hr className="w-full bg-gray-500 mb-10" />
+
       <div className="w-full mb-20">
         {/* Banner for promotion */}
         <div className="w-full sm:flex flex-row justify-between items-center h-48 sm:h-64 md:h-72 lg:h-80 gap-x-4 mb-10">
