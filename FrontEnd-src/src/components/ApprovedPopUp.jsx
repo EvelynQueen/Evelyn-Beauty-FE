@@ -40,7 +40,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm caret-transparent">
-      <div className="bg-pink-50 w-[500px] min-h-[250px] rounded-2xl shadow-2xl p-8 flex flex-col justify-between items-center gap-6">
+      <div className="relative bg-pink-50 w-[500px] min-h-[250px] rounded-2xl shadow-2xl p-8 flex flex-col justify-around items-center gap-6">
         <div className="absolute top-4 right-4 z-10">
           <IoMdClose
             size={24}
@@ -49,12 +49,15 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
           />
         </div>
 
-        <p className="text-xl font-semibold text-pink-800 text-center leading-relaxed">
+        <p className="text-base md:text-xl text-black text-center leading-relaxed">
           ❓ Are you sure you want to
           <span className="text-red-600 font-bold mx-1">Decline</span>
           or
           <span className="text-green-600 font-bold mx-1">Approve</span>
           this order?
+        </p>
+        <p className="text-base md:text-xl font-semibold text-red-900">
+          {orderId}
         </p>
 
         <div className="flex w-full justify-evenly">

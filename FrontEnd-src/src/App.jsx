@@ -1,4 +1,10 @@
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import {
+  matchPath,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
@@ -27,6 +33,7 @@ import OrderDashboard from "./pages/OrderDashboard";
 import ProductModifier from "./pages/ProductModifier";
 import SupportRequests from "./pages/SupportRequests";
 import Support from "./pages/Support";
+import DetailOrder from "./components/DetailOrder";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -123,6 +130,12 @@ const protectedRoutes = [
     roles: ["SF"],
     token: true,
   },
+  {
+    path: "/order/:orderId",
+    element: <DetailOrder />,
+    roles: ["SF"],
+    token: true,
+  },
 ];
 
 // routes that hide navbar
@@ -135,6 +148,7 @@ const staffRoutes = [
   "/order-dashboard",
   "/product-modifier",
   "/support-requests",
+  "/order/:orderId",
 ];
 
 const App = () => {
@@ -144,7 +158,11 @@ const App = () => {
   const isOS =
     token && role === "OS" && ownerRoutes.includes(location.pathname);
   const isSF =
-    token && role === "SF" && staffRoutes.includes(location.pathname);
+    token &&
+    role === "SF" &&
+    staffRoutes.some((path) =>
+      matchPath({ path, end: false }, location.pathname)
+    );
 
   if (isOS) {
     return (

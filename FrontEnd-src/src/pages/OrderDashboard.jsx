@@ -2,10 +2,15 @@ import { useEffect } from "react";
 import useOrder from "../hook/useOrder";
 import { toast } from "react-toastify";
 import ApprovedPopUp from "../components/ApprovedPopUp";
+import { Link } from "react-router-dom";
 
 const OrderDashboard = () => {
-  const { allOrders, handleGetAllOrders, selectedOrderId, setSelectedOrderId } =
-    useOrder();
+  const {
+    allOrders,
+    handleGetAllOrders,
+    setSelectedOrderId,
+    setSelectedOrder,
+  } = useOrder();
   const getAllOrder = async () => {
     const res = await handleGetAllOrders();
     console.log(allOrders);
@@ -30,8 +35,11 @@ const OrderDashboard = () => {
 
   useEffect(() => {
     getAllOrder();
-  }, [allOrders]);
+  }, []);
 
+  const handleSelectOrder = (order) => {
+    setSelectedOrder(order);
+  };
   return (
     <div className="w-full flex flex-col justify-start items-center p-10">
       {!allOrders || allOrders.length === 0 ? (
@@ -40,13 +48,6 @@ const OrderDashboard = () => {
         </div>
       ) : (
         <div className="w-full rounded-xl overflow-hidden border border-gray-300 shadow-md caret-transparent">
-          {selectedOrderId !== null && (
-            <ApprovedPopUp
-              orderId={selectedOrderId}
-              onClose={() => setSelectedOrderId(null)}
-            />
-          )}
-
           <table className="table-auto w-full text-center border-collapse">
             <thead className="bg-gradient-to-r from-green-100 to-green-200 text-gray-700 font-semibold text-sm uppercase tracking-wider">
               <tr>
@@ -70,8 +71,15 @@ const OrderDashboard = () => {
                   } hover:bg-gray-100 transition duration-200`}
                 >
                   <td className="border border-gray-200 px-6 py-4">
-                    {order.orderId}
+                    <Link
+                      to={`/order/${order.orderId}`}
+                      onClick={() => handleSelectOrder(order)}
+                      className="text-blue-700 hover:underline hover:font-bold transition"
+                    >
+                      {order.orderId}
+                    </Link>
                   </td>
+
                   <td className="border border-gray-200 px-6 py-4">
                     {order.accountId}
                   </td>
@@ -81,18 +89,7 @@ const OrderDashboard = () => {
                   <td className="border border-gray-200 px-6 py-4">
                     {new Date(order.date).toLocaleDateString("vi-VN")}
                   </td>
-                  <td
-                    className="border border-gray-200 px-6 py-4"
-                    onClick={() => {
-                      if (order.status === "in_transit") {
-                        setSelectedOrderId(order.orderId);
-                      } else {
-                        toast.info(
-                          "Only orders that are 'waiting' can be modified."
-                        );
-                      }
-                    }}
-                  >
+                  <td className="border border-gray-200 px-6 py-4">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
       ${

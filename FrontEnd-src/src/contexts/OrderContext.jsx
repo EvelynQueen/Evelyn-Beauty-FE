@@ -7,10 +7,11 @@ const OrderContext = createContext(null);
 export const OrderProvider = ({ children }) => {
   const [allOrders, setAllOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState([]);
 
   const handleApproveOrders = async (orderId, status) => {
     try {
-      const res = await approveOrderAPI(orderId, status);
+      await approveOrderAPI(orderId, status);
       return { success: true, status: 200 };
     } catch (error) {
       if (!error.response?.status) {
@@ -46,6 +47,8 @@ export const OrderProvider = ({ children }) => {
     handleApproveOrders,
     selectedOrderId,
     setSelectedOrderId,
+    selectedOrder,
+    setSelectedOrder,
   };
   return (
     <OrderContext.Provider value={value}>{children}</OrderContext.Provider>
