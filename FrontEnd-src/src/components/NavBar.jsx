@@ -6,6 +6,8 @@ import { CiUser, CiMenuBurger } from "react-icons/ci";
 import { IoIosArrowBack } from "react-icons/io";
 import useAuth from "../hook/useAuth";
 import CartIcon from "./CartIcon";
+import { AiTwotoneCustomerService } from "react-icons/ai";
+
 const NavBar = () => {
   const { logout, role, token } = useAuth();
   const navigate = useNavigate();
@@ -91,6 +93,11 @@ const NavBar = () => {
           )}
         </div>
         {token && <CartIcon />}
+        {token && (
+          <Link to="/support" className="text-xl cursor-pointer">
+            <AiTwotoneCustomerService />
+          </Link>
+        )}
       </div>
 
       {/* Navbar for <=sm screen */}
@@ -132,6 +139,13 @@ const NavBar = () => {
             to="/shopping"
           >
             Shopping
+          </NavLink>
+          <NavLink
+            onClick={() => setVisible(!visible)}
+            className="py-2 pl-6 shadow-sm"
+            to="/support"
+          >
+            Support
           </NavLink>
           {role && (
             <button

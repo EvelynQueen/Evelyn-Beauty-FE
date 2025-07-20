@@ -29,6 +29,8 @@ import user from "./user.png";
 import sale from "./hot-sale.png";
 import discount from "./discount.png";
 import oops from "./oops.png";
+import paymentSuccessful from "./paymentSuccessful.png";
+import paymentFailed from "./paymentFailed.jpg";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -61,4 +63,6 @@ export const assets = {
   sale,
   discount,
   oops,
+  paymentSuccessful,
+  paymentFailed,
 };

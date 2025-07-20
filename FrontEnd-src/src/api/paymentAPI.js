@@ -1,11 +1,7 @@
 import axios from "./axiosInstance";
 
-const paymentAPI = async ({ profileId, promotionProgramId, items }) => {
-  const res = await axios("/payment/create-payos", {
-    profileId,
-    promotionProgramId,
-    items,
-  });
+const paymentAPI = async (data) => {
+  const res = await axios.post("/payment/create-payos", data);
   return res.data;
 };
 
@@ -16,4 +12,11 @@ export const getPromotionAPI = async (items) => {
     items,
   });
   return res.data.data;
+};
+
+export const getShippingAPI = async (fullAddress) => {
+  const res = await axios.post("/delivery/calculate-fee-v2", {
+    address: fullAddress,
+  });
+  return res.data;
 };

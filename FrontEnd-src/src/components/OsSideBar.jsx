@@ -10,7 +10,7 @@ const OsSideBar = () => {
   const { logout } = useAuth();
 
   return (
-    <div className="h-full bg-black sticky hidden sm:flex flex-col w-1/5 justify-between items-center gap-3 text-white">
+    <div className="h-full bg-gray-800 sticky hidden sm:flex flex-col w-1/5 justify-between items-center gap-3 text-white">
       <div className="flex flex-col justify-start items-center">
         {/* Avatar */}
         <img
@@ -28,7 +28,7 @@ const OsSideBar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 p-2 rounded ${
                   isActive
-                    ? "bg-[#F4F4F4] text-black"
+                    ? "bg-white/20"
                     : " hover:bg-gray-700 transition-colors"
                 }`
               }
@@ -42,35 +42,7 @@ const OsSideBar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 p-2 rounded ${
                   isActive
-                    ? "bg-[#F4F4F4] text-black"
-                    : " hover:bg-gray-700 transition-colors"
-                }`
-              }
-            >
-              <MdAccountBox /> <span>Staff Account</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/owner-dashboard"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded ${
-                  isActive
-                    ? "bg-[#F4F4F4] text-black"
-                    : " hover:bg-gray-700 transition-colors"
-                }`
-              }
-            >
-              <FaHouseUser /> <span>Home</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/account-modifier"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded ${
-                  isActive
-                    ? "bg-[#F4F4F4] text-black"
+                    ? "bg-white/20"
                     : " hover:bg-gray-700 transition-colors"
                 }`
               }

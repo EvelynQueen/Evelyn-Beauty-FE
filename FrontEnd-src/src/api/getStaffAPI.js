@@ -1,6 +1,11 @@
 import axios from "./axiosInstance";
+const getStaffAPI = async () => {
+  const res = await axios.get("/auth/all");
+  return res.data.accounts;
+};
+export default getStaffAPI;
 
-export const getStaffAPI = async () => {
-  const response = await axios.get("/auth/all");
-  return response.data.accounts;
+export const addStaffAPI = async (data) => {
+  const res = await axios.post("/auth/create", data);
+  return res.data;
 };

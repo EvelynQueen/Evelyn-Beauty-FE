@@ -1,7 +1,7 @@
 import React from "react";
 
 const StaffDashboard = () => {
-  return <div></div>;
+  return <div>StaffDashboard</div>;
 };
 
 export default StaffDashboard;

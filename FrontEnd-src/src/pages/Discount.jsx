@@ -5,15 +5,16 @@ import { toast } from "react-toastify";
 import useAuth from "../hook/useAuth";
 import { assets } from "../assets/assets";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import useProduct from "../hook/useProduct";
 import { BiSolidDiscount } from "react-icons/bi";
+import PaymentButton from "./PaymentButton";
 
 const Discount = () => {
   const { currency } = useProduct();
   const { accountId, token } = useAuth();
   const { selectedTotal, selectedCartItemsForDiscount } = useCart();
+  const { shippingFee } = usePayment();
   const {
     discount,
     getDiscount,
@@ -63,7 +64,7 @@ const Discount = () => {
       {/* Title */}
       <div className="w-full flex flex-row items-center justify-start mb-10 gap-1 text-base sm:text-base md:text-xl caret-transparent">
         <BiSolidDiscount />
-        <p>Shipping Profile</p>
+        <p>Discount</p>
       </div>
 
       {/* Promotion list */}
@@ -117,19 +118,55 @@ const Discount = () => {
       {/* Total  */}
       <div className="w-3/4 flex flex-col items-center justify-between mb-10">
         <hr className="w-full bg-gray-500 mb-10 caret-transparent" />
-        <p>
-          {totalAfterDiscount} {currency}
-        </p>
+        {/* Total */}
+        <div className="w-full flex flex-row items-start justify-between mb-4">
+          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-800 font-semibold">
+            Total
+          </p>
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-base sm:text-xl md:text-2xl text-gray-800">
+              {Number(selectedTotal).toLocaleString()} {currency}
+            </p>
+            {selectedDiscount.value ? (
+              selectedDiscount.value > 0 ? (
+                <div className="flex flex-col items-end gap-2">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
+                    + {Number(shippingFee).toLocaleString()} {currency}
+                  </p>
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
+                    -
+                    {Number(
+                      selectedDiscount.value * selectedTotal
+                    ).toLocaleString()}
+                    {currency}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-end gap-2">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
+                    + {Number(shippingFee).toLocaleString()} {currency}
+                  </p>
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
+                    - {Number(shippingFee).toLocaleString()} {currency}
+                  </p>
+                </div>
+              )
+            ) : (
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
+                + {Number(shippingFee).toLocaleString()} {currency}
+              </p>
+            )}
+            <hr className="w-full bg-gray-200 my-2" />
+            <p className="text-base sm:text-xl md:text-2xl text-red-700 font-semibold">
+              {Number(totalAfterDiscount).toLocaleString()} {currency}
+            </p>
+          </div>
+        </div>
         <hr className="w-full bg-gray-500 mb-10 caret-transparent" />
       </div>
       {/* Navigate button */}
       <div className="w-full flex flex-row justify-end items-center mb-20">
-        <Link
-          to="/shipping-information"
-          className="bg-black text-white px-4 py-2 text-sm sm:text-base md:text-lg rounded-md hover:scale-105 hover:bg-gray-800 transition-all duration-200"
-        >
-          Go to Shipping
-        </Link>
+        <PaymentButton />
       </div>
       {/* Footer */}
       <div className="w-full">

@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Shopping from "./pages/Shopping";
@@ -21,6 +20,13 @@ import OsSideBar from "./components/OsSideBar";
 import StaffAccount from "./pages/StaffAccount";
 import Discount from "./pages/Discount";
 import ShippingProfile from "./pages/ShippingProfile";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
+import SFSideBar from "./components/SFSideBar";
+import OrderDashboard from "./pages/OrderDashboard";
+import ProductModifier from "./pages/ProductModifier";
+import SupportRequests from "./pages/SupportRequests";
+import Support from "./pages/Support";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -29,6 +35,16 @@ const RedirectIfRole = ({ children }) => {
   if (token && role === "SF") return <Navigate to="/staff-dashboard" replace />;
   return children;
 };
+
+// Public routes that should redirect non-CU users
+const publicRoutes = [
+  { path: "/", element: <Home /> },
+  { path: "/shopping", element: <Shopping /> },
+  { path: "/products/:productId", element: <Product /> },
+  { path: "/about", element: <AboutUs /> },
+  { path: "/delivery", element: <Delivery /> },
+  { path: "/policy", element: <Policy /> },
+];
 
 // Setup protected route for role and token
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -45,23 +61,25 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
   return children;
 };
-
-// Public routes that should redirect non-CU users
-const publicRoutes = [
-  { path: "/", element: <Home /> },
-  { path: "/shopping", element: <Shopping /> },
-  { path: "/products/:productId", element: <Product /> },
-  { path: "/about", element: <AboutUs /> },
-  { path: "/delivery", element: <Delivery /> },
-  { path: "/policy", element: <Policy /> },
-];
-
 // Protected routes
 const protectedRoutes = [
   { path: "/profile", element: <Profile />, roles: ["CU"], token: true },
   { path: "/order", element: <Order />, roles: ["CU"], token: true },
   { path: "/cart", element: <Cart />, roles: ["CU"], token: true },
   { path: "/discount", element: <Discount />, roles: ["CU"], token: true },
+  { path: "/support", element: <Support />, roles: ["CU"], token: true },
+  {
+    path: "/payment/success",
+    element: <PaymentSuccess />,
+    roles: ["CU"],
+    token: true,
+  },
+  {
+    path: "/payment/cancel",
+    element: <PaymentCancel />,
+    roles: ["CU"],
+    token: true,
+  },
   {
     path: "/shipping-information",
     element: <ShippingProfile />,
@@ -87,13 +105,37 @@ const protectedRoutes = [
     roles: ["SF"],
     token: true,
   },
+  {
+    path: "/order-dashboard",
+    element: <OrderDashboard />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/product-modifier",
+    element: <ProductModifier />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/support-requests",
+    element: <SupportRequests />,
+    roles: ["SF"],
+    token: true,
+  },
 ];
 
 // routes that hide navbar
 const hiddenNavBarRoutes = ["/login", "/signup", "/verify-email"];
 
-// routes that show owner side bar
+// routes that show side bar
 const ownerRoutes = ["/owner-dashboard", "/staff-modifier"];
+const staffRoutes = [
+  "/staff-dashboard",
+  "/order-dashboard",
+  "/product-modifier",
+  "/support-requests",
+];
 
 const App = () => {
   const { role, token } = useAuth();
@@ -101,11 +143,35 @@ const App = () => {
   const hideNavBar = hiddenNavBarRoutes.includes(location.pathname);
   const isOS =
     token && role === "OS" && ownerRoutes.includes(location.pathname);
+  const isSF =
+    token && role === "SF" && staffRoutes.includes(location.pathname);
 
   if (isOS) {
     return (
       <div className="flex h-screen w-full justify-between">
         <OsSideBar />
+        <div className="flex-1 overflow-y-auto p-4">
+          <Routes>
+            {protectedRoutes.map(({ path, element, roles }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <ProtectedRoute allowedRoles={roles}>
+                    {element}
+                  </ProtectedRoute>
+                }
+              />
+            ))}
+          </Routes>
+          <ToastContainer />
+        </div>
+      </div>
+    );
+  } else if (isSF) {
+    return (
+      <div className="flex h-screen w-full justify-between">
+        <SFSideBar />
         <div className="flex-1 overflow-y-auto p-4">
           <Routes>
             {protectedRoutes.map(({ path, element, roles }) => (
