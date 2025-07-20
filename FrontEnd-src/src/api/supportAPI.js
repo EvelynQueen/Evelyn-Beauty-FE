@@ -1,7 +1,7 @@
 import axios from "./axiosInstance";
 
 const supportAPI = async (comment) => {
-  const res = await axios.post("/supports", { comment: comment });
+  const res = await axios.post("/supports", comment);
   return res.data;
 };
 

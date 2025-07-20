@@ -11,6 +11,7 @@ import { PaymentProvider } from "./contexts/PaymentContext.jsx";
 import { LocationProvider } from "./contexts/LocationContext.jsx";
 import { ProfileProvider } from "./contexts/ProflieContext.jsx";
 import { OrderProvider } from "./contexts/OrderContext.jsx";
+import { SupportProvider } from "./contexts/SupportContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
@@ -22,7 +23,9 @@ createRoot(document.getElementById("root")).render(
                 <ProfileProvider>
                   <PaymentProvider>
                     <OrderProvider>
-                      <App />
+                      <SupportProvider>
+                        <App />
+                      </SupportProvider>
                     </OrderProvider>
                   </PaymentProvider>
                 </ProfileProvider>
