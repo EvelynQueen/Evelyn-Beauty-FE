@@ -7,6 +7,8 @@ import QuantityButton from "../components/QuantityButton";
 import useCart from "../hook/useCart";
 import { toast } from "react-toastify";
 import Footer from "../components/Footer";
+import Heading from "../components/Heading";
+import { BiLogoProductHunt } from "react-icons/bi";
 
 const Product = () => {
   const { currency } = useProduct();
@@ -55,7 +57,8 @@ const Product = () => {
 
   return productDetail ? (
     <div className="flex flex-col h-full">
-      <div className="border-t-2 border-gray-300 pt-10 transition-opacity ease-in duration-500 opacity-100 mb-20">
+      <div className="pt-2 transition-opacity ease-in duration-500 opacity-100 mb-20">
+        <Heading icons={BiLogoProductHunt} title="Product Detail" />
         {/* PRoduct data */}
         <div className="flex gap-4 sm:gap-12 flex-col sm:flex-row">
           {/* Product image */}

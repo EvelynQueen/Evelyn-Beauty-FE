@@ -50,8 +50,8 @@ const Discount = () => {
   }, [token, accountId]);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center mb-10">
-      {/* Back to previous page */}
+    <div className="w-full flex flex-col items-center justify-center mb-10 px-4">
+      {/* Back */}
       <button
         onClick={() => window.history.back()}
         className="w-full flex flex-row justify-start items-center mb-5 caret-transparent cursor-pointer"
@@ -59,118 +59,125 @@ const Discount = () => {
         <IoIosArrowBack />
         <p className="text-sm sm:text-base md:text-xl ml-2">Back</p>
       </button>
-      <hr className="w-full bg-gray-500 mb-5 caret-transparent" />
+      <hr className="w-full bg-gray-300 mb-5 caret-transparent" />
 
       {/* Title */}
-      <div className="w-full flex flex-row items-center justify-start mb-10 gap-1 text-base sm:text-base md:text-xl caret-transparent">
+      <div className="w-full flex flex-row items-center justify-start mb-10 gap-2 text-xl font-semibold caret-transparent text-gray-800">
         <BiSolidDiscount />
         <p>Discount</p>
       </div>
 
       {/* Promotion list */}
-      <div className="w-3/4 flex flex-col items-center justify-center gap-4 mb-20">
+      <div className="w-full max-w-3xl flex flex-col items-center gap-4 mb-20">
         {discount.length > 0 ? (
           discount.map((item, index) => (
             <div
               key={index}
-              className="w-full flex flex-row items-center justify-between gap-10 rounded-md border border-gray-300 p-4 hover:shadow-md bg-gray-50 transition-all duration-200"
+              className="w-full flex justify-between items-center gap-6 rounded-md border border-gray-300 p-4 hover:shadow-md bg-gray-50 transition-all duration-200"
             >
-              <div className="flex w-full flex-row items-center justify-start gap-10 ">
+              <div className="flex flex-row items-center gap-6">
                 <img
                   src={assets.discount}
-                  alt="discount image"
-                  className="w-1/8 h-1/8 bg-white object-cover rounded-md border border-gray-200"
+                  alt="discount"
+                  className="w-12 h-12 object-cover rounded border border-gray-200"
                 />
-                {/* Show discount here */}
-                <p className="font-bold text-sm sm:text-base md:text-xl text-gray-700">
-                  {item.name}
-                </p>
+                <p className="text-lg font-medium text-gray-700">{item.name}</p>
               </div>
-
-              {/* Selected checkbox */}
-              <div className="basis-1/6 flex justify-center ">
-                <input
-                  className="w-5 h-5"
-                  type="radio"
-                  name="discountProgramSelection"
-                  checked={
-                    selectedDiscount
-                      ? selectedDiscount.programId === item.programId
-                      : false
-                  }
-                  onChange={() => {
-                    handleSelectDiscount(item.programId);
-                  }}
-                />
-              </div>
+              <input
+                className="w-5 h-5"
+                type="radio"
+                name="discountProgramSelection"
+                checked={selectedDiscount?.programId === item.programId}
+                onChange={() => handleSelectDiscount(item.programId)}
+              />
             </div>
           ))
         ) : (
-          <div className="mb-10 caret-transparent flex flex-col items-center justify-center">
-            <img src={assets.oops} alt="oops icon" className="w-1/4" />
-            <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-gray-500 mt-4">
+          <div className="mb-10 flex flex-col items-center">
+            <img src={assets.oops} alt="oops" className="w-40" />
+            <p className="text-xl text-gray-500 mt-4">
               You don't have any discount!
             </p>
           </div>
         )}
       </div>
 
-      {/* Total  */}
-      <div className="w-3/4 flex flex-col items-center justify-between mb-10">
-        <hr className="w-full bg-gray-500 mb-10 caret-transparent" />
-        {/* Total */}
-        <div className="w-full flex flex-row items-start justify-between mb-4">
-          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-800 font-semibold">
-            Total
-          </p>
-          <div className="flex flex-col items-end gap-2">
-            <p className="text-base sm:text-xl md:text-2xl text-gray-800">
-              {Number(selectedTotal).toLocaleString()} {currency}
-            </p>
-            {selectedDiscount.value ? (
-              selectedDiscount.value > 0 ? (
-                <div className="flex flex-col items-end gap-2">
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
-                    + {Number(shippingFee).toLocaleString()} {currency}
-                  </p>
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
-                    -
-                    {Number(
-                      selectedDiscount.value * selectedTotal
-                    ).toLocaleString()}
-                    {currency}
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-end gap-2">
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
-                    + {Number(shippingFee).toLocaleString()} {currency}
-                  </p>
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
-                    - {Number(shippingFee).toLocaleString()} {currency}
-                  </p>
-                </div>
-              )
-            ) : (
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500">
-                + {Number(shippingFee).toLocaleString()} {currency}
-              </p>
-            )}
-            <hr className="w-full bg-gray-200 my-2" />
-            <p className="text-base sm:text-xl md:text-2xl text-red-700 font-semibold">
-              {Number(totalAfterDiscount).toLocaleString()} {currency}
-            </p>
-          </div>
+      {/* Total Section */}
+      <div className="w-full max-w-3xl flex flex-col items-end gap-4 mb-12">
+        <hr className="w-full bg-gray-200" />
+        <div className="w-full flex justify-between mb-1">
+          <span className="text-xl font-semibold text-gray-700">Total</span>
+          <span className="text-lg text-gray-800">
+            {Number(selectedTotal).toLocaleString()} {currency}
+          </span>
         </div>
-        <hr className="w-full bg-gray-500 mb-10 caret-transparent" />
+
+        {/* Shipping + Discount */}
+        {selectedDiscount.value ? (
+          selectedDiscount.value > 0 ? (
+            <>
+              <div className="flex justify-between w-full text-base text-gray-500">
+                <span>Shipping fee</span>
+                <span>
+                  + {Number(shippingFee).toLocaleString()} {currency}
+                </span>
+              </div>
+              <div className="flex justify-between w-full text-base text-gray-500">
+                <span>Discount</span>
+                <span>
+                  -
+                  {Number(
+                    selectedDiscount.value * selectedTotal
+                  ).toLocaleString()}{" "}
+                  {currency}
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between w-full text-base text-gray-500">
+                <span>Shipping fee</span>
+                <span>
+                  + {Number(shippingFee).toLocaleString()} {currency}
+                </span>
+              </div>
+              <div className="flex justify-between w-full text-base text-gray-500">
+                <span>Discount</span>
+                <span>
+                  - {Number(shippingFee).toLocaleString()} {currency}
+                </span>
+              </div>
+            </>
+          )
+        ) : (
+          <div className="flex justify-between w-full text-base text-gray-500">
+            <span>Shipping fee</span>
+            <span>
+              + {Number(shippingFee).toLocaleString()} {currency}
+            </span>
+          </div>
+        )}
+
+        <hr className="w-full bg-gray-200 my-2" />
+
+        {/* Final total */}
+        <div className="flex justify-between w-full text-2xl font-bold text-red-700">
+          <span>Total after discount</span>
+          <span>
+            {Number(totalAfterDiscount).toLocaleString()} {currency}
+          </span>
+        </div>
+        <hr className="w-full bg-gray-300" />
       </div>
-      {/* Navigate button */}
-      <div className="w-full flex flex-row justify-end items-center mb-20">
+
+      {/* Button */}
+      <div className="w-full max-w-3xl flex justify-end mb-20">
         <PaymentButton />
       </div>
+
       {/* Footer */}
       <div className="w-full">
-        <Footer></Footer>
+        <Footer />
       </div>
     </div>
   );

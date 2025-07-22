@@ -31,6 +31,8 @@ import discount from "./discount.png";
 import oops from "./oops.png";
 import paymentSuccessful from "./paymentSuccessful.png";
 import paymentFailed from "./paymentFailed.jpg";
+import Shipping from "./Shipping.png";
+import VNPAY from "./VNPAY.png";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -65,4 +67,6 @@ export const assets = {
   oops,
   paymentSuccessful,
   paymentFailed,
+  Shipping,
+  VNPAY,
 };

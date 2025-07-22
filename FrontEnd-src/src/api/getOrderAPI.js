@@ -11,3 +11,8 @@ export const approveOrderAPI = async (orderId, status) => {
   const res = await axios.put(`/orders/${orderId}`, { status: status });
   return res.data;
 };
+
+export const getMyOrderAPI = async () => {
+  const res = await axios.get("/orders/my-orders");
+  return res.data;
+};

@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const allProductAPI = async (categoryId, page = 1, limit = 10) => {
   let url = `http://localhost:3000/api/products/category?category=${categoryId}&page=${page}&limit=${limit}`;
   const res = await axios.get(url);

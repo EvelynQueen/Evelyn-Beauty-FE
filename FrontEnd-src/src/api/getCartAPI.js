@@ -48,3 +48,16 @@ export const deleteCartItemAPI = async (
   });
   return response.data;
 };
+
+export const updateProductAPI = async (productId, formData) => {
+  const res = await axios.put(
+    `/products/updateProduct?productId=${productId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return res.data;
+};

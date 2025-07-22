@@ -33,7 +33,9 @@ import OrderDashboard from "./pages/OrderDashboard";
 import ProductModifier from "./pages/ProductModifier";
 import SupportRequests from "./pages/SupportRequests";
 import Support from "./pages/Support";
-import DetailOrder from "./components/DetailOrder";
+import DetailOrder from "./pages/DetailOrder";
+import ProductDetail from "./pages/ProductDetail";
+import OrderDetail from "./pages/OrderDetail";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -71,7 +73,14 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 // Protected routes
 const protectedRoutes = [
   { path: "/profile", element: <Profile />, roles: ["CU"], token: true },
-  { path: "/order", element: <Order />, roles: ["CU"], token: true },
+  { path: "/orders", element: <Order />, roles: ["CU"], token: true },
+  {
+    path: "/orders/:orderId",
+    element: <OrderDetail />,
+    roles: ["CU"],
+    token: true,
+  },
+
   { path: "/cart", element: <Cart />, roles: ["CU"], token: true },
   { path: "/discount", element: <Discount />, roles: ["CU"], token: true },
   { path: "/support", element: <Support />, roles: ["CU"], token: true },
@@ -125,13 +134,19 @@ const protectedRoutes = [
     token: true,
   },
   {
+    path: "/product-modifier/:productId",
+    element: <ProductDetail />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
     path: "/support-requests",
     element: <SupportRequests />,
     roles: ["SF"],
     token: true,
   },
   {
-    path: "/order/:orderId",
+    path: "/order-dashboard/:orderId",
     element: <DetailOrder />,
     roles: ["SF"],
     token: true,
@@ -148,7 +163,8 @@ const staffRoutes = [
   "/order-dashboard",
   "/product-modifier",
   "/support-requests",
-  "/order/:orderId",
+  "/order-dashboard/:orderId",
+  "/product-modifier/:productId",
 ];
 
 const App = () => {
@@ -166,7 +182,7 @@ const App = () => {
 
   if (isOS) {
     return (
-      <div className="flex h-screen w-full justify-between">
+      <div className="flex h-screen w-full justify-between caret-transparent">
         <OsSideBar />
         <div className="flex-1 overflow-y-auto p-4">
           <Routes>

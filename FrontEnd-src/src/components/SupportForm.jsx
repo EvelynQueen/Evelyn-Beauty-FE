@@ -74,7 +74,7 @@ const SupportForm = () => {
         type="submit"
         className="px-6 py-2 bg-black text-white rounded-md flex flex-row items-center justify-center gap-2"
       >
-        Send <IoMdSend />
+        {isSubmitting ? "Send..." : "Send"} <IoMdSend />
       </button>
     </form>
   );

@@ -21,7 +21,7 @@ const DetailOrder = () => {
       case "cancel":
         return "Declined";
       case "return_approved":
-        return "In Progress";
+        return "Approved";
       case "in_transit":
         return "Waiting for Approve";
       case "done":
@@ -67,7 +67,7 @@ const DetailOrder = () => {
                   : selectedOrder?.status === "return_requested" ||
                     selectedOrder?.status === "cancel"
                   ? "bg-red-100 text-red-700"
-                  : "bg-gray-100 text-gray-700"
+                  : "bg-blue-200 text-blue-600"
               }`}
           >
             {renderStatus(selectedOrder?.status)}

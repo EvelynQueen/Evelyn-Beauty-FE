@@ -5,12 +5,7 @@ import ApprovedPopUp from "../components/ApprovedPopUp";
 import { Link } from "react-router-dom";
 
 const OrderDashboard = () => {
-  const {
-    allOrders,
-    handleGetAllOrders,
-    setSelectedOrderId,
-    setSelectedOrder,
-  } = useOrder();
+  const { allOrders, handleGetAllOrders, setSelectedOrder } = useOrder();
   const getAllOrder = async () => {
     const res = await handleGetAllOrders();
     console.log(allOrders);
@@ -59,6 +54,9 @@ const OrderDashboard = () => {
                 <th className="border border-gray-200 px-6 py-3">
                   Payment Date
                 </th>
+                <th className="border border-gray-200 px-6 py-3">
+                  Payment Time
+                </th>
                 <th className="border border-gray-200 px-6 py-3">Status </th>
               </tr>
             </thead>
@@ -72,7 +70,7 @@ const OrderDashboard = () => {
                 >
                   <td className="border border-gray-200 px-6 py-4">
                     <Link
-                      to={`/order/${order.orderId}`}
+                      to={`/order-dashboard/${order.orderId}`}
                       onClick={() => handleSelectOrder(order)}
                       className="text-blue-700 hover:underline hover:font-bold transition"
                     >
@@ -88,6 +86,13 @@ const OrderDashboard = () => {
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
                     {new Date(order.date).toLocaleDateString("vi-VN")}
+                  </td>
+                  <td className="border border-gray-200 px-6 py-4">
+                    {new Date(order.date).toLocaleTimeString("vi-VN", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
                     <span
@@ -108,7 +113,7 @@ const OrderDashboard = () => {
                       order.status === "cancel"
                         ? "Decline"
                         : order.status === "return_approved"
-                        ? "In Progress"
+                        ? "Approved"
                         : order.status === "in_transit"
                         ? "Waiting"
                         : order.status === "done"

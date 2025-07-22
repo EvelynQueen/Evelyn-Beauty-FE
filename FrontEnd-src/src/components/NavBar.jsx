@@ -68,7 +68,7 @@ const NavBar = () => {
                     My profile
                   </Link>
                   <Link
-                    to={"/order"}
+                    to={"/orders"}
                     className="cursor-pointer hover:text-black"
                   >
                     Order

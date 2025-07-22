@@ -1,70 +1,93 @@
-import { IoIosArrowBack } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
-import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
 import { IoIosAddCircle } from "react-icons/io";
+import { RiUserLocationFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import Heading from "../components/Heading";
+import Footer from "../components/Footer";
 import ProfileForm from "../components/ProfileForm";
 import ProfileSelected from "../components/ProfileSelected";
-import { RiUserLocationFill } from "react-icons/ri";
 import useProfile from "../hook/useProfile";
+import { assets } from "../assets/assets";
 
 const ShippingProfile = () => {
   const { selectedProfile } = useProfile();
+
   return (
-    <div className="w-full flex flex-col items-center justify-center mb-10">
-      {/* Back to previous page */}
-      <button
-        onClick={() => window.history.back()}
-        className="w-full flex flex-row justify-start items-center mb-5 caret-transparent cursor-pointer"
-      >
-        <IoIosArrowBack />
-        <p className="text-sm sm:text-base md:text-xl ml-2">Back</p>
-      </button>
-      <hr className="w-full bg-gray-500 mb-5 caret-transparent" />
+    <div className="w-full px-4 py-6 caret-transparent">
+      <Heading icons={FaLocationDot} title="Shipping Profile" />
 
-      {/* Title */}
-      <div className="w-full flex flex-row items-center justify-start mb-10 gap-1 text-base sm:text-base md:text-xl caret-transparent">
-        <FaLocationDot />
-        <p>Shipping Profile</p>
-      </div>
+      <div className="w-full flex flex-col items-center justify-center mb-10">
+        {/* Form Section */}
+        <div className="w-full flex flex-col md:flex-row justify-between items-start gap-8 mt-8">
+          {/* Add new profile */}
+          <div className="w-full md:w-1/2 max-w-xl flex flex-col gap-4">
+            <p className="flex items-center gap-2 text-base text-gray-800 mb-2">
+              <IoIosAddCircle className="text-lg" />
+              Add a new shipping profile
+            </p>
+            <ProfileForm />
+          </div>
 
-      {/* Shipping profile form */}
-      <div className="w-full flex flex-row items-start justify-between gap-4 mb-10">
-        <div className="w-4/9 flex flex-col items-start justify-start gap-4 mb-10">
-          <p className="flex flex-row justify-start items-center text-sm sm:text-base md:text-lg text-gray-800 mb-2">
-            <IoIosAddCircle /> Add a new shipping profile
-          </p>
-          <ProfileForm />
+          {/* Existing profiles */}
+          <div className="w-full md:w-1/2 max-w-xl flex flex-col gap-4">
+            <p className="flex items-center gap-2 text-base text-gray-800 mb-2">
+              <RiUserLocationFill className="text-lg" />
+              Your existing shipping profiles
+            </p>
+            <ProfileSelected />
+          </div>
         </div>
-        <div className="w-4/9 flex flex-col items-start justify-start gap-4">
-          <p className="flex flex-row justify-start items-center text-sm sm:text-base md:text-lg text-gray-800 mb-2">
-            <RiUserLocationFill />
-            Your existing shipping profiles
-          </p>
-          <ProfileSelected />
+
+        {/* Navigation */}
+        <div className="w-full flex justify-end mt-10">
+          {selectedProfile.profileId ? (
+            <Link
+              to="/discount"
+              className="bg-black text-white px-5 py-2 rounded-md text-base hover:scale-105 hover:bg-gray-800 transition-all duration-200"
+            >
+              Explore Discounts
+            </Link>
+          ) : (
+            <p className="text-base text-gray-700">
+              Please{" "}
+              <span className="font-semibold text-black">
+                select a shipping profile
+              </span>{" "}
+              to continue
+            </p>
+          )}
+        </div>
+
+        {/* Shipping & Payment logos side by side */}
+        <div className="w-full flex flex-col items-center mt-12">
+          <div className="flex flex-row items-center justify-center gap-8">
+            {/* Shipping */}
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm text-gray-500">Delivered by:</span>
+              <img
+                src={assets.Shipping}
+                alt="Shipping Logo"
+                className="h-8 opacity-80 hover:opacity-100 transition"
+              />
+            </div>
+
+            {/* Payment */}
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm text-gray-500">Payment by:</span>
+              <img
+                src={assets.VNPAY}
+                alt="VNPAY Logo"
+                className="h-8 opacity-80 hover:opacity-100 transition"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="w-full mt-16">
+          <Footer />
         </div>
       </div>
-      {/* Navigation button */}
-      <div className="w-full flex flex-row justify-end items-center mb-20">
-        {selectedProfile.profileId ? (
-          <Link
-            to="/discount"
-            className="bg-black text-white px-4 py-2 text-sm sm:text-base md:text-lg rounded-md hover:scale-105 hover:bg-gray-800 transition-all duration-200"
-          >
-            Explore Discounts
-          </Link>
-        ) : (
-          <p className="text-sm sm:text-base md:text-lg text-gray-700">
-            Please{" "}
-            <span className="font-semibold text-black">
-              select a shipping profile
-            </span>{" "}
-            to continue
-          </p>
-        )}
-      </div>
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
