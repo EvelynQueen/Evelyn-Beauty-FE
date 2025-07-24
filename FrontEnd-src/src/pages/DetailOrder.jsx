@@ -91,6 +91,7 @@ const DetailOrder2 = () => {
                 {currency}
               </span>
             </div>
+
             <div className="flex items-center">
               <span className="inline-block w-48 font-semibold text-black">
                 Discount amount:
@@ -99,6 +100,7 @@ const DetailOrder2 = () => {
                 {Number(selectedOrder?.discount).toLocaleString()} {currency}
               </span>
             </div>
+
             <div className="flex items-center">
               <span className="inline-block w-48 font-semibold text-black">
                 Total:
@@ -108,6 +110,7 @@ const DetailOrder2 = () => {
                 {currency}
               </span>
             </div>
+
             {/* status-specific block */}
             <div className="mt-4">
               {selectedOrder.status === "cancel" ? (
@@ -118,28 +121,36 @@ const DetailOrder2 = () => {
                   </span>
                 </p>
               ) : selectedOrder.status === "done" ? (
-                selectedOrder?.details?.[0]?.rate != null ? (
-                  <div className="flex flex-col gap-2">
-                    <p className="font-semibold">
-                      Rate: {selectedOrder.details[0].rate} ⭐
-                    </p>
-                    {selectedOrder.details[0].imageEvaluate ? (
-                      <img
-                        src={selectedOrder.details[0].imageEvaluate}
-                        alt="Evaluation"
-                        className="w-32 h-32 object-cover rounded"
-                      />
-                    ) : (
-                      <p className="text-gray-500 italic">
-                        Waiting for customer to upload evaluation image
+                <div>
+                  {selectedOrder?.details?.[0]?.rate != null ? (
+                    <div className="flex flex-col gap-2 mt-2">
+                      <p className="font-semibold">
+                        Rate: {selectedOrder.details[0].rate} ⭐
                       </p>
-                    )}
+                      {selectedOrder.details[0].imageEvaluate ? (
+                        <img
+                          src={selectedOrder.details[0].imageEvaluate}
+                          alt="Evaluation"
+                          className="w-32 h-32 object-cover rounded"
+                        />
+                      ) : (
+                        <p className="text-gray-500 italic">
+                          Waiting for customer to upload evaluation image
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 italic mt-2">
+                      Waiting for customer to rate
+                    </p>
+                  )}
+                  <div className="flex flex-col">
+                    <span className="text-black font-semibold">Comment:</span>
+                    <span className="text-gray-800 font-medium break-words">
+                      {selectedOrder?.details?.[0]?.comment ?? "No comment"}
+                    </span>
                   </div>
-                ) : (
-                  <p className="text-gray-500 italic">
-                    Waiting for customer to rate
-                  </p>
-                )
+                </div>
               ) : null}
             </div>
           </div>

@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 const StaffAccount = () => {
   const location = useLocation();
   const { allStaff, handleGetStaff, handleDeleteStaff } = useStaff();
+
   const handleGetAllStaff = async () => {
     const res = await handleGetStaff();
     if (!res.success) {
@@ -24,13 +25,15 @@ const StaffAccount = () => {
   };
 
   const handleDelete = async (accountId) => {
-    const confirm = window.confirm(
+    const confirmDelete = window.confirm(
       "Are you sure you want to delete this staff account?"
     );
-    if (!confirm) return;
+    if (!confirmDelete) return;
+
     const res = await handleDeleteStaff(accountId);
     if (res.success) {
       toast.success("Staff deleted successfully!");
+      handleGetAllStaff();
     } else {
       switch (res.status) {
         case 403:
@@ -52,7 +55,7 @@ const StaffAccount = () => {
 
   return (
     <div className="w-full flex flex-col justify-start items-center p-10">
-      {/* Nút thêm staff ở góc trái */}
+      {/* Add staff button */}
       <div className="w-full flex flex-row justify-start mb-6">
         <Link
           to="/staff-add"
@@ -61,7 +64,8 @@ const StaffAccount = () => {
           + Add Staff
         </Link>
       </div>
-      {/* Bảng staff */}
+
+      {/* Staff table */}
       {!allStaff || allStaff.length === 0 ? (
         <div className="text-gray-500 text-lg font-medium italic flex items-center gap-2">
           <span>🚫 No Staff was hired!</span>
@@ -95,7 +99,20 @@ const StaffAccount = () => {
                     {staff.name}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
-                    {staff.email}
+                    <a
+                      href={
+                        `https://mail.google.com/mail/?view=cm&fs=1` +
+                        `&to=${staff.email}` +
+                        `&su=${encodeURIComponent(
+                          `Evelyn Beauty to ${staff.name}`
+                        )}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-700 hover:underline"
+                    >
+                      {staff.email}
+                    </a>
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
                     {staff.role === "OS" ? (
