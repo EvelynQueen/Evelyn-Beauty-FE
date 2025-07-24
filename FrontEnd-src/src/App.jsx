@@ -36,6 +36,10 @@ import Support from "./pages/Support";
 import DetailOrder from "./pages/DetailOrder";
 import ProductDetail from "./pages/ProductDetail";
 import OrderDetail from "./pages/OrderDetail";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyForgotPass from "./pages/VerifyForgotPass";
+import StaffAdd from "./pages/StaffAdd";
+import VerifyStaffEmail from "./pages/VerifyStaffEmail";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -116,6 +120,30 @@ const protectedRoutes = [
     token: true,
   },
   {
+    path: "/staff-add",
+    element: <StaffAdd />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/verify-staff-email",
+    element: <VerifyStaffEmail />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/product-modifier",
+    element: <ProductModifier />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/product-modifier/:productId",
+    element: <ProductDetail />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
     path: "/staff-dashboard",
     element: <StaffDashboard />,
     roles: ["SF"],
@@ -127,18 +155,7 @@ const protectedRoutes = [
     roles: ["SF"],
     token: true,
   },
-  {
-    path: "/product-modifier",
-    element: <ProductModifier />,
-    roles: ["SF"],
-    token: true,
-  },
-  {
-    path: "/product-modifier/:productId",
-    element: <ProductDetail />,
-    roles: ["SF"],
-    token: true,
-  },
+
   {
     path: "/support-requests",
     element: <SupportRequests />,
@@ -154,17 +171,28 @@ const protectedRoutes = [
 ];
 
 // routes that hide navbar
-const hiddenNavBarRoutes = ["/login", "/signup", "/verify-email"];
+const hiddenNavBarRoutes = [
+  "/login",
+  "/signup",
+  "/verify-email",
+  "/forgot-password",
+  "/verify-forgot-password",
+];
 
 // routes that show side bar
-const ownerRoutes = ["/owner-dashboard", "/staff-modifier"];
+const ownerRoutes = [
+  "/owner-dashboard",
+  "/staff-modifier",
+  "/staff-add",
+  "/verify-staff-email",
+  "/product-modifier",
+  "/product-modifier/:productId",
+];
 const staffRoutes = [
   "/staff-dashboard",
   "/order-dashboard",
-  "/product-modifier",
   "/support-requests",
   "/order-dashboard/:orderId",
-  "/product-modifier/:productId",
 ];
 
 const App = () => {
@@ -172,7 +200,12 @@ const App = () => {
   const location = useLocation();
   const hideNavBar = hiddenNavBarRoutes.includes(location.pathname);
   const isOS =
-    token && role === "OS" && ownerRoutes.includes(location.pathname);
+    token &&
+    role === "OS" &&
+    ownerRoutes.some((path) =>
+      matchPath({ path, end: false }, location.pathname)
+    );
+
   const isSF =
     token &&
     role === "SF" &&
@@ -238,12 +271,15 @@ const App = () => {
               element={<RedirectIfRole>{element}</RedirectIfRole>}
             />
           ))}
-
           {/* Login route */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
-
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/verify-forgot-password"
+            element={<VerifyForgotPass />}
+          />
           {/* Protected routes */}
           {protectedRoutes.map(({ path, element, roles }) => (
             <Route

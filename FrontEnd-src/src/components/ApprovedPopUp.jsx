@@ -3,10 +3,15 @@ import { toast } from "react-toastify";
 import { IoMdClose } from "react-icons/io";
 
 const ApprovedPopUp = ({ orderId, onClose }) => {
-  const { handleApproveOrders, setSelectedOrderId } = useOrder();
+  const {
+    handleRejectOrder,
+    handleApprovedOrder,
+    setSelectedOrderId,
+    setSelectedOrder,
+  } = useOrder();
 
-  const approveOrder = async (orderId, status) => {
-    const res = await handleApproveOrders(orderId, status);
+  const rejectOrder = async (orderId) => {
+    const res = await handleRejectOrder(orderId);
     if (!res.success) {
       switch (res.status) {
         case 403:
@@ -23,18 +28,48 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
           break;
       }
     } else {
-      toast.success("Order updated successfully!");
+      setSelectedOrder((prev) => ({
+        ...prev,
+        status: "return_approved",
+      }));
+      toast.success("Order Rejected!");
+      onClose();
+    }
+  };
+  const approveOrder = async (orderId) => {
+    const res = await handleApprovedOrder(orderId);
+    if (!res.success) {
+      switch (res.status) {
+        case 403:
+          toast.error("Session expired, please login again");
+          break;
+        case 404:
+          toast.error("Orders not found !");
+          break;
+        case 0:
+          toast.error("Something went wrong, please login again");
+          break;
+        default:
+          toast.error("Something went wrong, please login again");
+          break;
+      }
+    } else {
+      setSelectedOrder((prev) => ({
+        ...prev,
+        status: "return_approved",
+      }));
+      toast.success("Order Approved!");
       onClose();
     }
   };
 
   const handleDecline = () => {
-    approveOrder(orderId, "return_requested");
+    rejectOrder(orderId);
     setSelectedOrderId(null);
   };
 
   const handleApprove = () => {
-    approveOrder(orderId, "return_approved");
+    approveOrder(orderId);
     setSelectedOrderId(null);
   };
 

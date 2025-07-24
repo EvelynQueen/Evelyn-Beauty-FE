@@ -7,3 +7,8 @@ export const loginAPI = async (email, password) => {
   });
   return res.data;
 };
+
+export const loginGoogleAPI = async (payload) => {
+  const res = await axios.post("/auth/google", payload);
+  return res.data;
+};

@@ -12,6 +12,13 @@ export const approveOrderAPI = async (orderId, status) => {
   return res.data;
 };
 
+export const realApproveAPI = async (orderId) => {
+  const res = await axios.post("/delivery/create-order-ghn-from-order", {
+    orderId,
+  });
+  return res.data;
+};
+
 export const getMyOrderAPI = async () => {
   const res = await axios.get("/orders/my-orders");
   return res.data;

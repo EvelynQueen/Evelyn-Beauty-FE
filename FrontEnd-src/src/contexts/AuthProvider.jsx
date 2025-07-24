@@ -22,6 +22,8 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userRole");
     localStorage.removeItem("accountId");
+    localStorage.removeItem("selectedCartItems");
+    localStorage.removeItem("selectedOrderDetail");
     setAccountId("");
     setToken("");
     setRole("");

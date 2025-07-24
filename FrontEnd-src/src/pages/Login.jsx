@@ -6,6 +6,8 @@ import { loginAPI } from "../api/authAPI";
 import { assets } from "../assets/assets";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import GoogleLoginBtn from "../components/GoogleLoginBtn";
 
 const Login = () => {
   const { login } = useAuth();
@@ -144,14 +146,23 @@ const Login = () => {
             >
               {isSubmitting ? "Logging in..." : "Log In"}
             </button>
+
+            <div className="w-full mt-4">
+              <GoogleLoginBtn />
+            </div>
           </form>
         </div>
-        <p className="text-sm sm:text-base md:text-lg text-center mb-5">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-500 font-semibold">
-            Sign up
+        <div className="w-full flex flex-col justify-end items-center gap-2">
+          <p className="text-sm sm:text-base md:text-lg text-center">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-500 font-semibold">
+              Sign up
+            </Link>
+          </p>
+          <Link to="/forgot-password" className="text-gray-800 mb-5 underline">
+            Forgot Password ?
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

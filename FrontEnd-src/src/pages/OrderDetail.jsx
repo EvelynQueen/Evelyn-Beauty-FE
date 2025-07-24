@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Heading from "../components/Heading";
@@ -10,7 +10,30 @@ const OrderDetail = () => {
   const { orderId } = useParams();
   const { selectedOrderDetail } = useOrder();
   const { currency } = useProduct();
-  if (!selectedOrderDetail || selectedOrderDetail.orderId !== orderId) {
+
+  const [orderData, setOrderData] = useState(null);
+
+  useEffect(() => {
+    // Ưu tiên lấy từ context trước
+    if (selectedOrderDetail && selectedOrderDetail.orderId === orderId) {
+      setOrderData(selectedOrderDetail);
+      localStorage.setItem(
+        "selectedOrderDetail",
+        JSON.stringify(selectedOrderDetail)
+      );
+    } else {
+      // Nếu không có, thử lấy từ localStorage
+      const stored = localStorage.getItem("selectedOrderDetail");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.orderId === orderId) {
+          setOrderData(parsed);
+        }
+      }
+    }
+  }, [selectedOrderDetail, orderId]);
+
+  if (!orderData) {
     return (
       <div className="px-4 py-6">
         <p className="text-center text-gray-500">Loading order details...</p>
@@ -18,9 +41,11 @@ const OrderDetail = () => {
     );
   }
 
-  const { date, status, items } = selectedOrderDetail;
+  const { date, status, details } = orderData;
 
-  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const totalAmount = Array.isArray(details)
+    ? details.reduce((sum, item) => sum + item.total, 0)
+    : 0;
 
   const renderStatus = (status) => {
     const base = "text-sm px-3 py-1 rounded-full font-semibold inline-block";
@@ -64,7 +89,7 @@ const OrderDetail = () => {
         <div className="mt-4 flex justify-between items-start flex-wrap gap-2">
           <p className="text-sm md:text-base text-gray-600">
             <span className="font-semibold text-black">Order ID:</span>{" "}
-            {selectedOrderDetail.orderId}
+            {orderData.orderId}
           </p>
           <div>{renderStatus(status)}</div>
         </div>
@@ -105,7 +130,7 @@ const OrderDetail = () => {
               </tr>
             </thead>
             <tbody>
-              {items.map((item, index) => (
+              {details.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="px-4 py-2 border-b border-gray-100">
                     {item.productName}
@@ -125,7 +150,7 @@ const OrderDetail = () => {
           </table>
         </div>
 
-        {/* Total tổng cuối cùng */}
+        {/* Tổng tiền */}
         <div className="mt-4 text-right">
           <p className="text-xl font-bold text-green-700">
             Total: {totalAmount.toLocaleString()} {currency}

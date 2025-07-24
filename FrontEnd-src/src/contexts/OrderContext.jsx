@@ -3,6 +3,7 @@ import Order from "../pages/Order";
 import getOrderAPI, {
   approveOrderAPI,
   getMyOrderAPI,
+  realApproveAPI,
 } from "../api/getOrderAPI";
 
 const OrderContext = createContext(null);
@@ -14,9 +15,9 @@ export const OrderProvider = ({ children }) => {
   const [myOrders, setMyOrders] = useState([]);
   const [selectedOrderDetail, setSelectedOrderDetail] = useState([]);
 
-  const handleApproveOrders = async (orderId, status) => {
+  const handleRejectOrder = async (orderId) => {
     try {
-      await approveOrderAPI(orderId, status);
+      await approveOrderAPI(orderId, "return_requested");
       return { success: true, status: 200 };
     } catch (error) {
       if (!error.response?.status) {
@@ -27,6 +28,15 @@ export const OrderProvider = ({ children }) => {
           status: error.response?.status,
         };
       }
+    }
+  };
+
+  const handleApprovedOrder = async (orderId) => {
+    try {
+      await realApproveAPI(orderId);
+      return { success: true, status: 200 };
+    } catch (err) {
+      return { success: false, status: err.response?.status || 0 };
     }
   };
 
@@ -66,7 +76,7 @@ export const OrderProvider = ({ children }) => {
   const value = {
     allOrders,
     handleGetAllOrders,
-    handleApproveOrders,
+    handleRejectOrder,
     selectedOrderId,
     setSelectedOrderId,
     selectedOrder,
@@ -75,6 +85,7 @@ export const OrderProvider = ({ children }) => {
     myOrders,
     selectedOrderDetail,
     setSelectedOrderDetail,
+    handleApprovedOrder,
   };
   return (
     <OrderContext.Provider value={value}>{children}</OrderContext.Provider>

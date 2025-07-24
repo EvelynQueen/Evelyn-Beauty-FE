@@ -95,11 +95,11 @@ const Order = () => {
               </thead>
               <tbody>
                 {myOrders.map((order, index) => {
-                  const totalAmount = order.items.reduce(
+                  const totalAmount = order.details.reduce(
                     (sum, item) => sum + item.total,
                     0
                   );
-                  const totalQuantity = order.items.reduce(
+                  const totalQuantity = order.details.reduce(
                     (sum, item) => sum + item.quantity,
                     0
                   );

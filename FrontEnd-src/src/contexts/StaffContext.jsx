@@ -1,5 +1,5 @@
 import { Children, createContext, useState } from "react";
-import getStaffAPI, { addStaffAPI } from "../api/getStaffAPI";
+import getStaffAPI, { addStaffAPI, deleteStaffAPI } from "../api/getStaffAPI";
 
 export const StaffContext = createContext();
 export const StaffProvider = ({ children }) => {
@@ -38,12 +38,30 @@ export const StaffProvider = ({ children }) => {
     }
   };
 
+  const handleDeleteStaff = async (accountId) => {
+    try {
+      await deleteStaffAPI(accountId);
+      await handleGetStaff(); // cập nhật lại danh sách staff
+      return { success: true, status: 200 };
+    } catch (error) {
+      if (!error.response) {
+        return { success: false, status: 0 };
+      } else {
+        return {
+          success: false,
+          status: error.response.status,
+        };
+      }
+    }
+  };
+
   const value = {
     allStaff,
     handleGetStaff,
     registerStaff,
     setRegisterStaff,
     handleAddStaff,
+    handleDeleteStaff,
   };
 
   return (

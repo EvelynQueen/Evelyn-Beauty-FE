@@ -9,3 +9,8 @@ export const addStaffAPI = async (data) => {
   const res = await axios.post("/auth/create", data);
   return res.data;
 };
+
+export const deleteStaffAPI = async (accountId) => {
+  const res = await axios.delete(`/auth/delete/${accountId}`);
+  return res.data;
+};

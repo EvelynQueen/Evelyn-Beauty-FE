@@ -51,6 +51,29 @@ const Cart = () => {
   };
 
   useEffect(() => {
+    const stored = localStorage.getItem("selectedCartItems");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setSelectedItems(parsed);
+        }
+      } catch (e) {
+        console.error("Error parsing selectedCartItems from localStorage", e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("selectedCartItems", JSON.stringify(selectedItems));
+  }, [selectedItems]);
+
+  useEffect(() => {
+    const validIds = cartItems.map((item) => item.product.productId);
+    setSelectedItems((prev) => prev.filter((id) => validIds.includes(id)));
+  }, [cartItems]);
+
+  useEffect(() => {
     fetchCartItems();
   }, [token, accountId]);
 
@@ -58,7 +81,6 @@ const Cart = () => {
     <div>
       {/* Cart - items */}
       <div className="w-full flex flex-col h-full mb-10">
-        {/* Back to previous page */}
         <button
           onClick={() => window.history.back()}
           className="w-full flex flex-row justify-start items-center mb-5 caret-transparent cursor-pointer"
@@ -69,7 +91,6 @@ const Cart = () => {
 
         <hr className="w-full bg-gray-500 mb-5 caret-transparent" />
 
-        {/* Title */}
         <div className="w-full flex flex-col items-start justify-center mb-10">
           <div className="w-full flex flex-row items-center justify-start gap-1 text-base md:text-xl caret-transparent">
             <BiSolidCart />
@@ -80,7 +101,6 @@ const Cart = () => {
           </p>
         </div>
 
-        {/* Body */}
         <div className="w-full flex flex-col md:flex-row justify-center items-center md:justify-between md:items-start gap-5">
           {/* Cart Item */}
           <div className="flex-[5] flex flex-col gap-y-5 h-full">
@@ -174,9 +194,9 @@ const Cart = () => {
             )}
           </div>
 
+          {/* Summary */}
           <div className="flex-[2] flex flex-col justify-between">
             <div className="w-full rounded-md border border-gray-300 p-4 flex flex-col justify-between gap-6">
-              {/* Total amount */}
               <div className="w-full h-13 flex flex-row justify-between items-center">
                 <p className="font-semibold text-sm sm:text-base md:text-xl lg:text-2xl">
                   Total
@@ -188,7 +208,6 @@ const Cart = () => {
                 </p>
               </div>
 
-              {/* Continue button */}
               <div className="w-full flex justify-center">
                 {selectedItems.length > 0 ? (
                   <Link
@@ -208,7 +227,7 @@ const Cart = () => {
               </div>
             </div>
 
-            <p className="w-full text-sm md:text-base">
+            <p className="w-full text-sm md:text-base mt-4">
               <span className="font-semibold">Shipping fees</span> and{" "}
               <span className="font-semibold">discounts</span> are not included.
               Continue to unlock better deals.

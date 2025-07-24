@@ -50,7 +50,7 @@ const Shopping = () => {
   }, [id]);
 
   return (
-    <div className="w-full h-full flex flex-col caret-transparent">
+    <div className="w-full h-full flex flex-col caret-transparent px-10">
       <div className="w-full mb-20">
         <div className="w-full">
           {/* Product Block */}

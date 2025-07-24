@@ -1,9 +1,7 @@
-import React from "react";
 import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 import { RiBillLine, RiCustomerService2Line } from "react-icons/ri";
-import { AiOutlineProduct } from "react-icons/ai";
 
 import useAuth from "../hook/useAuth";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -38,20 +36,7 @@ const SFSideBar = () => {
               <IoHomeOutline /> <span>Home</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/product-modifier"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded ${
-                  isActive
-                    ? "bg-white/20"
-                    : " hover:bg-gray-700 transition-colors"
-                }`
-              }
-            >
-              <AiOutlineProduct /> <span>Product</span>
-            </NavLink>
-          </li>
+
           <li>
             <NavLink
               to="/order-dashboard"

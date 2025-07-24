@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import useStaff from "../hook/useStaff";
 import { toast } from "react-toastify";
+import { Link, useLocation } from "react-router-dom";
 
 const StaffAccount = () => {
-  const { allStaff, handleGetStaff } = useStaff();
+  const location = useLocation();
+  const { allStaff, handleGetStaff, handleDeleteStaff } = useStaff();
   const handleGetAllStaff = async () => {
     const res = await handleGetStaff();
     if (!res.success) {
@@ -21,12 +23,45 @@ const StaffAccount = () => {
     }
   };
 
+  const handleDelete = async (accountId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this staff account?"
+    );
+    if (!confirm) return;
+    const res = await handleDeleteStaff(accountId);
+    if (res.success) {
+      toast.success("Staff deleted successfully!");
+    } else {
+      switch (res.status) {
+        case 403:
+          toast.error("Session expired, please login again");
+          break;
+        case 0:
+          toast.error("Something went wrong, please login again");
+          break;
+        default:
+          toast.error("Something went wrong, please try again");
+          break;
+      }
+    }
+  };
+
   useEffect(() => {
     handleGetAllStaff();
-  }, []);
+  }, [location]);
 
   return (
     <div className="w-full flex flex-col justify-start items-center p-10">
+      {/* Nút thêm staff ở góc trái */}
+      <div className="w-full flex flex-row justify-start mb-6">
+        <Link
+          to="/staff-add"
+          className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-700 transition font-semibold text-sm shadow"
+        >
+          + Add Staff
+        </Link>
+      </div>
+      {/* Bảng staff */}
       {!allStaff || allStaff.length === 0 ? (
         <div className="text-gray-500 text-lg font-medium italic flex items-center gap-2">
           <span>🚫 No Staff was hired!</span>
@@ -74,7 +109,10 @@ const StaffAccount = () => {
                     )}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
-                    <button className="text-red-600 hover:text-red-800 font-medium text-sm hover:underline transition">
+                    <button
+                      className="text-red-600 hover:text-red-800 font-medium text-sm hover:underline transition"
+                      onClick={() => handleDelete(staff.accountId)}
+                    >
                       Delete
                     </button>
                   </td>

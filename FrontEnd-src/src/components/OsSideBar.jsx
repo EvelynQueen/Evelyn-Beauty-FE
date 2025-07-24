@@ -2,9 +2,11 @@ import React from "react";
 import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
 import { MdAccountBox } from "react-icons/md";
-import { FaHouseUser } from "react-icons/fa";
+import { IoHomeOutline } from "react-icons/io5";
 import useAuth from "../hook/useAuth";
 import { IoLogOutOutline } from "react-icons/io5";
+import { RiContactsBook2Line } from "react-icons/ri";
+import { AiOutlineProduct } from "react-icons/ai";
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -21,7 +23,7 @@ const OsSideBar = () => {
         />
 
         {/* Menu List */}
-        <ul className="w-full px-4 flex flex-col gap-2 sm:text-sm md:text-base lg:text-xl">
+        <ul className="w-full px-4 flex flex-col gap-2 text-sm sm:text-sm md:text-base">
           <li>
             <NavLink
               to="/owner-dashboard"
@@ -33,7 +35,7 @@ const OsSideBar = () => {
                 }`
               }
             >
-              <FaHouseUser /> <span>Home</span>
+              <IoHomeOutline /> <span>Home</span>
             </NavLink>
           </li>
           <li>
@@ -47,7 +49,21 @@ const OsSideBar = () => {
                 }`
               }
             >
-              <MdAccountBox /> <span>Staff Account</span>
+              <RiContactsBook2Line /> <span>Staff Account</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/product-modifier"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <AiOutlineProduct /> <span>Product</span>
             </NavLink>
           </li>
         </ul>
