@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import useStaff from "../hook/useStaff";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Heading from "../components/Heading";
+import { FaUserEdit } from "react-icons/fa";
 
 const StaffAdd = () => {
   const navigate = useNavigate();
@@ -43,7 +45,10 @@ const StaffAdd = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-start items-center p-10">
+    <div className="w-full flex flex-col justify-start items-center p-2">
+      <div className="w-full">
+        <Heading icons={FaUserEdit} title="Add new Staff" />
+      </div>
       <div className="h-screen flex-1 flex flex-col justify-center items-center">
         <form
           onSubmit={handleSubmit(onSubmit)}

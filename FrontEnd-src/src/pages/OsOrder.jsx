@@ -1,40 +1,40 @@
-import { useEffect } from "react";
+// src/pages/OsOrder.jsx
+import React, { useEffect } from "react";
 import useOrder from "../hook/useOrder";
 import { toast } from "react-toastify";
-import ApprovedPopUp from "../components/ApprovedPopUp";
 import { Link } from "react-router-dom";
+import useProduct from "../hook/useProduct";
 
-const OrderDashboard = () => {
+const OsOrder = () => {
   const { allOrders, handleGetAllOrders, setSelectedOrder } = useOrder();
-  const getAllOrder = async () => {
-    const res = await handleGetAllOrders();
-    console.log(allOrders);
+  const { currency } = useProduct();
 
-    if (!res.success) {
-      switch (res.status) {
-        case 403:
-          toast.error("Session expired, please login again");
-          break;
-        case 404:
-          toast.error("Orders not found !");
-          break;
-        case 0:
-          toast.error("Something went wrong, please login again");
-          break;
-        default:
-          toast.error("Something went wrong, please login again");
-          break;
-      }
-    }
-  };
-
+  // Fetch all orders on mount
   useEffect(() => {
-    getAllOrder();
-  }, []);
+    const fetchOrders = async () => {
+      const res = await handleGetAllOrders();
+      if (!res.success) {
+        switch (res.status) {
+          case 403:
+            toast.error("Session expired, please login again");
+            break;
+          case 404:
+            toast.error("Orders not found!");
+            break;
+          default:
+            toast.error("Something went wrong, please try again");
+        }
+      }
+    };
+    fetchOrders();
+  }, [handleGetAllOrders]);
 
+  // When user clicks an order link, store it as JSON in localStorage
   const handleSelectOrder = (order) => {
     setSelectedOrder(order);
+    localStorage.setItem("selectedOrder", JSON.stringify(order));
   };
+
   return (
     <div className="w-full flex flex-col justify-start items-center p-10">
       {!allOrders || allOrders.length === 0 ? (
@@ -42,13 +42,13 @@ const OrderDashboard = () => {
           🚫 No Orders here!
         </div>
       ) : (
-        <div className="w-full rounded-xl overflow-hidden border border-gray-300 shadow-md caret-transparent">
+        <div className="w-full rounded-xl overflow-hidden border border-gray-300 shadow-md">
           <table className="table-auto w-full text-center border-collapse">
             <thead className="bg-gradient-to-r from-green-100 to-green-200 text-gray-700 font-semibold text-sm uppercase tracking-wider">
               <tr>
                 <th className="border border-gray-200 px-6 py-3">Order ID</th>
                 <th className="border border-gray-200 px-6 py-3">
-                  Shipping Info
+                  Assigned Staff
                 </th>
                 <th className="border border-gray-200 px-6 py-3">
                   Payment Date
@@ -57,7 +57,7 @@ const OrderDashboard = () => {
                   Payment Time
                 </th>
                 <th className="border border-gray-200 px-6 py-3">Total</th>
-                <th className="border border-gray-200 px-6 py-3">Status </th>
+                <th className="border border-gray-200 px-6 py-3">Status</th>
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm">
@@ -70,7 +70,7 @@ const OrderDashboard = () => {
                 >
                   <td className="border border-gray-200 px-6 py-4">
                     <Link
-                      to={`/order-dashboard/${order.orderId}`}
+                      to={`/all-orders/${order.orderId}`}
                       onClick={() => handleSelectOrder(order)}
                       className="text-blue-700 hover:underline hover:font-bold transition"
                     >
@@ -79,12 +79,11 @@ const OrderDashboard = () => {
                   </td>
 
                   <td className="border border-gray-200 px-6 py-4">
-                    {order.deliveryId == null ? (
-                      <span className="text-gray-500 italic">No shipping</span>
-                    ) : (
-                      order.deliveryId
-                    )}
+                    {order.accountId === "AC000"
+                      ? "Waiting..."
+                      : order.account.name}
                   </td>
+
                   <td className="border border-gray-200 px-6 py-4">
                     {new Date(order.date).toLocaleDateString("vi-VN")}
                   </td>
@@ -96,26 +95,26 @@ const OrderDashboard = () => {
                     })}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
-                    {Number(order.total_final).toLocaleString()} VND
+                    {Number(order.total_final).toLocaleString()} {currency}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
-      ${
-        order.status === "return_requested" || order.status === "cancel"
-          ? "bg-red-100 text-red-700"
-          : order.status === "return_approved"
-          ? "bg-blue-100 text-blue-700"
-          : order.status === "in_transit"
-          ? "bg-yellow-100 text-yellow-800"
-          : order.status === "done"
-          ? "bg-green-100 text-green-700"
-          : "bg-gray-100 text-gray-700"
-      }`}
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        order.status === "return_requested" ||
+                        order.status === "cancel"
+                          ? "bg-red-100 text-red-700"
+                          : order.status === "return_approved"
+                          ? "bg-blue-100 text-blue-700"
+                          : order.status === "in_transit"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "done"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
                     >
                       {order.status === "return_requested" ||
                       order.status === "cancel"
-                        ? "Decline"
+                        ? "Declined"
                         : order.status === "return_approved"
                         ? "Approved"
                         : order.status === "in_transit"
@@ -135,4 +134,4 @@ const OrderDashboard = () => {
   );
 };
 
-export default OrderDashboard;
+export default OsOrder;

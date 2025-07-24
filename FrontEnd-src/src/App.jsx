@@ -17,7 +17,6 @@ import Policy from "./pages/Policy";
 import Order from "./pages/Order";
 import Profile from "./pages/Profile";
 import useAuth from "./hook/useAuth";
-import OwnerDashboard from "./pages/OwnerDashboard";
 import Product from "./pages/Product";
 import StaffDashboard from "./pages/StaffDashboard";
 import SignUp from "./pages/SignUp";
@@ -40,6 +39,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import VerifyForgotPass from "./pages/VerifyForgotPass";
 import StaffAdd from "./pages/StaffAdd";
 import VerifyStaffEmail from "./pages/VerifyStaffEmail";
+import OsOrder from "./pages/OsOrder";
+import DetailOrder2 from "./pages/DetailOrder2";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -106,13 +107,6 @@ const protectedRoutes = [
     roles: ["CU"],
     token: true,
   },
-
-  {
-    path: "/owner-dashboard",
-    element: <OwnerDashboard />,
-    roles: ["OS"],
-    token: true,
-  },
   {
     path: "/staff-modifier",
     element: <StaffAccount />,
@@ -128,6 +122,18 @@ const protectedRoutes = [
   {
     path: "/verify-staff-email",
     element: <VerifyStaffEmail />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/all-orders",
+    element: <OsOrder />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/all-orders/:orderId",
+    element: <DetailOrder2 />,
     roles: ["OS"],
     token: true,
   },
@@ -187,6 +193,7 @@ const ownerRoutes = [
   "/verify-staff-email",
   "/product-modifier",
   "/product-modifier/:productId",
+  "/all-orders",
 ];
 const staffRoutes = [
   "/staff-dashboard",

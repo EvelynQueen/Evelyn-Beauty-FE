@@ -1,12 +1,10 @@
-import React from "react";
 import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
-import { MdAccountBox } from "react-icons/md";
-import { IoHomeOutline } from "react-icons/io5";
 import useAuth from "../hook/useAuth";
 import { IoLogOutOutline } from "react-icons/io5";
 import { RiContactsBook2Line } from "react-icons/ri";
 import { AiOutlineProduct } from "react-icons/ai";
+import { LiaLuggageCartSolid } from "react-icons/lia";
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -26,7 +24,7 @@ const OsSideBar = () => {
         <ul className="w-full px-4 flex flex-col gap-2 text-sm sm:text-sm md:text-base">
           <li>
             <NavLink
-              to="/owner-dashboard"
+              to="/all-orders"
               className={({ isActive }) =>
                 `flex items-center gap-3 p-2 rounded ${
                   isActive
@@ -35,7 +33,7 @@ const OsSideBar = () => {
                 }`
               }
             >
-              <IoHomeOutline /> <span>Home</span>
+              <LiaLuggageCartSolid /> <span>Orders</span>
             </NavLink>
           </li>
           <li>

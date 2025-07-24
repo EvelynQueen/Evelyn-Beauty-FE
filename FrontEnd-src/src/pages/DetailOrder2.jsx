@@ -84,19 +84,22 @@ const DetailOrder2 = () => {
           <div className="space-y-2">
             <div className="flex items-center">
               <span className="inline-block w-48 font-semibold text-black">
-                Total before discount
+                Assigned Staff ID:
               </span>
               <span className="text-gray-800">
-                {Number(selectedOrder?.total_before).toLocaleString()}{" "}
-                {currency}
+                {selectedOrder?.accountId === "AC000"
+                  ? "Waiting for approved"
+                  : selectedOrder?.accountId}
               </span>
             </div>
             <div className="flex items-center">
               <span className="inline-block w-48 font-semibold text-black">
-                Discount amount:
+                Assigned Staff:
               </span>
               <span className="text-gray-800">
-                {Number(selectedOrder?.discount).toLocaleString()} {currency}
+                {selectedOrder?.accountId === "AC000"
+                  ? "Waiting for approved"
+                  : selectedOrder?.account?.name ?? "—"}
               </span>
             </div>
             <div className="flex items-center">
