@@ -42,6 +42,7 @@ import VerifyStaffEmail from "./pages/VerifyStaffEmail";
 import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
 import AddProduct from "./pages/AddProduct";
+import SupportResolve from "./pages/SupportResolve";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -181,6 +182,12 @@ const protectedRoutes = [
     roles: ["SF"],
     token: true,
   },
+  {
+    path: "/support-resolve/:id",
+    element: <SupportResolve />,
+    roles: ["SF"],
+    token: true,
+  },
 ];
 
 // routes that hide navbar
@@ -208,6 +215,7 @@ const staffRoutes = [
   "/order-dashboard",
   "/support-requests",
   "/order-dashboard/:orderId",
+  "/support-resolve/:id",
 ];
 
 const App = () => {

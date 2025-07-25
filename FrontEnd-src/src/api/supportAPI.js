@@ -11,3 +11,16 @@ export const viewSupportDetail = async (supportId) => {
   const res = await axios.post("/supports/detail", { supportId: supportId });
   return res.data;
 };
+
+export const resolveSupport = async (supportId, resolve) => {
+  const res = await axios.put("/supports/resolve", {
+    supportId: supportId,
+    resolve: resolve,
+  });
+  return res.data;
+};
+
+export const getMySupports = async () => {
+  const res = await axios.get("/supports");
+  return res.data;
+};
