@@ -108,7 +108,7 @@ export const OrderProvider = ({ children }) => {
 
   const handleApprovedOrder = async (orderId) => {
     try {
-      await realApproveAPI(orderId); // server updates to "delivered"
+      await realApproveAPI(orderId);
 
       setAllOrders((prev) =>
         prev.map((order) =>
