@@ -41,6 +41,7 @@ import StaffAdd from "./pages/StaffAdd";
 import VerifyStaffEmail from "./pages/VerifyStaffEmail";
 import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
+import SupportResolve from "./pages/SupportResolve";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -171,6 +172,12 @@ const protectedRoutes = [
   {
     path: "/order-dashboard/:orderId",
     element: <DetailOrder />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/support-resolve/:id",
+    element: <SupportResolve />,
     roles: ["SF"],
     token: true,
   },
