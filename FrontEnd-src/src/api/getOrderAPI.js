@@ -23,3 +23,10 @@ export const getMyOrderAPI = async () => {
   const res = await axios.get("/orders/my-orders");
   return res.data;
 };
+
+export const trackingDeliveringAPI = async (transaction) => {
+  const res = await axios.post("/delivery/ghn-tracking-link", {
+    transaction_no: transaction,
+  });
+  return res.data;
+};

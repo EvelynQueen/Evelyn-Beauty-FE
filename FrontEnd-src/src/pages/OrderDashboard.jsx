@@ -110,14 +110,14 @@ const OrderDashboard = () => {
           ? "bg-yellow-100 text-yellow-800"
           : order.status === "done"
           ? "bg-green-100 text-green-700"
-          : "bg-gray-100 text-gray-700"
+          : "bg-sky-200 text-sky-700"
       }`}
                     >
                       {order.status === "return_requested" ||
                       order.status === "cancel"
                         ? "Decline"
-                        : order.status === "return_approved"
-                        ? "Approved"
+                        : order.status === "delivered"
+                        ? "Delivering"
                         : order.status === "in_transit"
                         ? "Waiting"
                         : order.status === "done"

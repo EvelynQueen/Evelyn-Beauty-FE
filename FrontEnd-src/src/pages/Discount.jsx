@@ -31,12 +31,13 @@ const Discount = () => {
         case 403:
           toast.error("Session expired, please login again");
           break;
-        case 0:
-          toast.error("Something went wrong, please login again");
-          break;
         default:
           toast.error("Something went wrong, please login again");
           break;
+      }
+    } else {
+      if (!res.data || res.data.length === 0) {
+        handleSelectDiscount(""); // auto reset if no discount
       }
     }
   };
@@ -48,6 +49,9 @@ const Discount = () => {
   useEffect(() => {
     handleGetDiscount();
   }, [token, accountId]);
+
+  const hasDiscount =
+    typeof selectedDiscount === "object" && selectedDiscount !== null;
 
   return (
     <div className="w-full flex flex-col items-center justify-center mb-10 px-4">
@@ -67,13 +71,34 @@ const Discount = () => {
         <p>Discount</p>
       </div>
 
-      {/* Promotion list */}
+      {/* Discount options */}
       <div className="w-full max-w-3xl flex flex-col items-center gap-4 mb-20">
+        {/* No discount radio */}
+        <div className="w-full flex justify-between items-center gap-6 rounded-md border border-gray-300 p-4 bg-white hover:shadow-md transition">
+          <div className="flex flex-row items-center gap-6">
+            <img
+              src={assets.discount}
+              alt="no-discount"
+              className="w-12 h-12 object-cover rounded border border-gray-200 opacity-30"
+            />
+            <p className="text-lg font-medium text-gray-500 italic">
+              No Discount Program
+            </p>
+          </div>
+          <input
+            className="w-5 h-5"
+            type="radio"
+            name="discountProgramSelection"
+            checked={selectedDiscount === ""}
+            onChange={() => handleSelectDiscount("")}
+          />
+        </div>
+
         {discount.length > 0 ? (
           discount.map((item, index) => (
             <div
               key={index}
-              className="w-full flex justify-between items-center gap-6 rounded-md border border-gray-300 p-4 hover:shadow-md bg-gray-50 transition-all duration-200"
+              className="w-full flex justify-between items-center gap-6 rounded-md border border-gray-300 p-4 hover:shadow-md bg-gray-50 transition"
             >
               <div className="flex flex-row items-center gap-6">
                 <img
@@ -87,7 +112,10 @@ const Discount = () => {
                 className="w-5 h-5"
                 type="radio"
                 name="discountProgramSelection"
-                checked={selectedDiscount?.programId === item.programId}
+                checked={
+                  typeof selectedDiscount === "object" &&
+                  selectedDiscount?.programId === item.programId
+                }
                 onChange={() => handleSelectDiscount(item.programId)}
               />
             </div>
@@ -102,7 +130,7 @@ const Discount = () => {
         )}
       </div>
 
-      {/* Total Section */}
+      {/* Total Summary */}
       <div className="w-full max-w-3xl flex flex-col items-end gap-4 mb-12">
         <hr className="w-full bg-gray-200" />
         <div className="w-full flex justify-between mb-1">
@@ -112,8 +140,8 @@ const Discount = () => {
           </span>
         </div>
 
-        {/* Shipping + Discount */}
-        {selectedDiscount.value ? (
+        {/* Discount/Shipping Breakdown */}
+        {hasDiscount ? (
           selectedDiscount.value > 0 ? (
             <>
               <div className="flex justify-between w-full text-base text-gray-500">
@@ -125,7 +153,7 @@ const Discount = () => {
               <div className="flex justify-between w-full text-base text-gray-500">
                 <span>Discount</span>
                 <span>
-                  -
+                  -{" "}
                   {Number(
                     selectedDiscount.value * selectedTotal
                   ).toLocaleString()}{" "}
@@ -160,7 +188,6 @@ const Discount = () => {
 
         <hr className="w-full bg-gray-200 my-2" />
 
-        {/* Final total */}
         <div className="flex justify-between w-full text-2xl font-bold text-red-700">
           <span>Total after discount</span>
           <span>
@@ -170,7 +197,7 @@ const Discount = () => {
         <hr className="w-full bg-gray-300" />
       </div>
 
-      {/* Button */}
+      {/* Payment */}
       <div className="w-full max-w-3xl flex justify-end mb-20">
         <PaymentButton />
       </div>

@@ -5,16 +5,18 @@ import Heading from "../components/Heading";
 import useOrder from "../hook/useOrder";
 import useProduct from "../hook/useProduct";
 import Footer from "../components/Footer";
+import { toast } from "react-toastify";
 
 const OrderDetail = () => {
   const { orderId } = useParams();
-  const { selectedOrderDetail } = useOrder();
+  const { selectedOrderDetail, handleTrackingDelivery, deliveryLink } =
+    useOrder();
   const { currency } = useProduct();
 
   const [orderData, setOrderData] = useState(null);
 
+  // Load từ context hoặc localStorage
   useEffect(() => {
-    // Ưu tiên lấy từ context trước
     if (selectedOrderDetail && selectedOrderDetail.orderId === orderId) {
       setOrderData(selectedOrderDetail);
       localStorage.setItem(
@@ -22,7 +24,6 @@ const OrderDetail = () => {
         JSON.stringify(selectedOrderDetail)
       );
     } else {
-      // Nếu không có, thử lấy từ localStorage
       const stored = localStorage.getItem("selectedOrderDetail");
       if (stored) {
         const parsed = JSON.parse(stored);
@@ -32,6 +33,18 @@ const OrderDetail = () => {
       }
     }
   }, [selectedOrderDetail, orderId]);
+
+  useEffect(() => {
+    const transactionNo = orderData?.transactionNo;
+    if (transactionNo) {
+      (async () => {
+        const res = await handleTrackingDelivery(transactionNo);
+        if (!res.success) {
+          toast.error("Something went wrong, please login again");
+        }
+      })();
+    }
+  }, [orderData]);
 
   if (!orderData) {
     return (
@@ -64,9 +77,11 @@ const OrderDetail = () => {
         return (
           <span className={`${base} text-green-700 bg-green-100`}>Done</span>
         );
-      case "return_approved":
+      case "delivered":
         return (
-          <span className={`${base} text-blue-700 bg-blue-100`}>Approved</span>
+          <span className={`${base} text-blue-700 bg-blue-100`}>
+            Delivering
+          </span>
         );
       case "in_transit":
         return (
@@ -108,6 +123,28 @@ const OrderDetail = () => {
         <p className="text-sm md:text-base text-gray-600 mt-1">
           <span className="font-semibold text-black">Shipping:</span>{" "}
           <span className="text-orange-600 font-semibold">GiaoHangNhanh</span>
+        </p>
+
+        {/* Delivery ID */}
+        <p className="text-sm md:text-base text-gray-600 mt-1">
+          <span className="font-semibold text-black">Delivery ID:</span>{" "}
+          <span className="text-gray-800">
+            {orderData.transactionNo ? (
+              <div>
+                {orderData.transactionNo}
+                {deliveryLink && (
+                  <button
+                    onClick={() => window.open(deliveryLink, "_blank")}
+                    className="ml-4 text-blue-600 hover:underline text-sm font-medium"
+                  >
+                    (Track)
+                  </button>
+                )}
+              </div>
+            ) : (
+              <span className="italic text-gray-500">No Delivery</span>
+            )}
+          </span>
         </p>
 
         {/* Danh sách sản phẩm */}
@@ -157,6 +194,7 @@ const OrderDetail = () => {
           </p>
         </div>
       </div>
+
       <Footer />
     </div>
   );

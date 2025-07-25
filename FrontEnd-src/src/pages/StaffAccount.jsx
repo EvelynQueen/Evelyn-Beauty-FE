@@ -73,7 +73,7 @@ const StaffAccount = () => {
       ) : (
         <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-md">
           <table className="table-auto w-full text-center border-collapse bg-white">
-            <thead className="bg-gradient-to-r from-sky-100 to-sky-200 text-gray-700 font-semibold text-sm uppercase tracking-wider">
+            <thead className="bg-gradient-to-r from-sky-200 to-green-300 text-gray-700 font-semibold text-sm uppercase tracking-wider">
               <tr>
                 <th className="border border-gray-200 px-6 py-3">ID</th>
                 <th className="border border-gray-200 px-6 py-3">Name</th>

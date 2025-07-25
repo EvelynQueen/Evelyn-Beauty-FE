@@ -8,6 +8,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
     handleApprovedOrder,
     setSelectedOrderId,
     setSelectedOrder,
+    handleRefreshSelectedOrder,
   } = useOrder();
 
   const rejectOrder = async (orderId) => {
@@ -30,7 +31,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
     } else {
       setSelectedOrder((prev) => ({
         ...prev,
-        status: "return_approved",
+        status: "return_rejected",
       }));
       toast.success("Order Rejected!");
       onClose();
@@ -56,7 +57,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
     } else {
       setSelectedOrder((prev) => ({
         ...prev,
-        status: "return_approved",
+        status: "delivered",
       }));
       toast.success("Order Approved!");
       onClose();
@@ -68,8 +69,9 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
     setSelectedOrderId(null);
   };
 
-  const handleApprove = () => {
-    approveOrder(orderId);
+  const handleApprove = async () => {
+    await approveOrder(orderId);
+    await handleRefreshSelectedOrder(orderId);
     setSelectedOrderId(null);
   };
 

@@ -49,9 +49,11 @@ const Order = () => {
         return (
           <span className={`${base} text-green-700 bg-green-100`}>Done</span>
         );
-      case "return_approved":
+      case "delivered":
         return (
-          <span className={`${base} text-blue-700 bg-blue-100`}>Approved</span>
+          <span className={`${base} text-blue-700 bg-blue-100`}>
+            Delivering
+          </span>
         );
       case "in_transit":
         return (

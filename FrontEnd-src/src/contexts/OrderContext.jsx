@@ -1,9 +1,9 @@
-import { createContext, useState } from "react";
-import Order from "../pages/Order";
+import { createContext, useCallback, useState } from "react";
 import getOrderAPI, {
   approveOrderAPI,
   getMyOrderAPI,
   realApproveAPI,
+  trackingDeliveringAPI,
 } from "../api/getOrderAPI";
 
 const OrderContext = createContext(null);
@@ -11,13 +11,15 @@ const OrderContext = createContext(null);
 export const OrderProvider = ({ children }) => {
   const [allOrders, setAllOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [myOrders, setMyOrders] = useState([]);
   const [selectedOrderDetail, setSelectedOrderDetail] = useState([]);
+  const [deliveryLink, setDeliveryLink] = useState("");
 
-  const handleRejectOrder = async (orderId) => {
+  const handleTrackingDelivery = async (transaction) => {
     try {
-      await approveOrderAPI(orderId, "return_requested");
+      const res = await trackingDeliveringAPI(transaction);
+      setDeliveryLink(res.link);
       return { success: true, status: 200 };
     } catch (error) {
       if (!error.response?.status) {
@@ -25,35 +27,42 @@ export const OrderProvider = ({ children }) => {
       } else {
         return {
           success: false,
-          status: error.response?.status,
+          status: error.status,
         };
       }
     }
   };
 
-  const handleApprovedOrder = async (orderId) => {
-    try {
-      await realApproveAPI(orderId);
-      return { success: true, status: 200 };
-    } catch (err) {
-      return { success: false, status: err.response?.status || 0 };
-    }
-  };
-
-  const handleGetAllOrders = async () => {
+  const handleGetAllOrders = useCallback(async () => {
     try {
       const res = await getOrderAPI();
       setAllOrders(res.orders);
       return { success: true, status: 200 };
     } catch (error) {
-      if (!error.response?.status) {
-        return { success: false, status: 0 };
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
+    }
+  }, []);
+
+  const handleRefreshSelectedOrder = async (orderId) => {
+    try {
+      const res = await getOrderAPI();
+      setAllOrders(res.orders);
+      const updated = res.orders.find((o) => o.orderId === orderId);
+      if (updated) {
+        setSelectedOrder(updated);
+        localStorage.setItem("selectedOrder", JSON.stringify(updated));
+        return { success: true, status: 200 };
       } else {
-        return {
-          success: false,
-          status: error.response?.status,
-        };
+        return { success: false, status: 404 };
       }
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
     }
   };
 
@@ -63,30 +72,105 @@ export const OrderProvider = ({ children }) => {
       setMyOrders(res.orders);
       return { success: true, status: 200 };
     } catch (error) {
-      if (!error.response?.status) {
-        return { success: false, status: 0 };
-      } else {
-        return {
-          success: false,
-          status: error.response?.status,
-        };
-      }
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
     }
   };
+
+  const handleRejectOrder = async (orderId) => {
+    try {
+      await approveOrderAPI(orderId, "return_requested");
+
+      setAllOrders((prev) =>
+        prev.map((order) =>
+          order.orderId === orderId
+            ? { ...order, status: "return_requested" }
+            : order
+        )
+      );
+
+      setSelectedOrder((prev) =>
+        prev?.orderId === orderId
+          ? { ...prev, status: "return_requested" }
+          : prev
+      );
+
+      return { success: true, status: 200 };
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
+    }
+  };
+
+  const handleApprovedOrder = async (orderId) => {
+    try {
+      await realApproveAPI(orderId); // server updates to "delivered"
+
+      setAllOrders((prev) =>
+        prev.map((order) =>
+          order.orderId === orderId ? { ...order, status: "delivered" } : order
+        )
+      );
+
+      setSelectedOrder((prev) =>
+        prev?.orderId === orderId ? { ...prev, status: "delivered" } : prev
+      );
+
+      return { success: true, status: 200 };
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
+    }
+  };
+
+  const handleMarkOrderDone = async (orderId) => {
+    try {
+      await approveOrderAPI(orderId, "done");
+
+      setAllOrders((prev) =>
+        prev.map((order) =>
+          order.orderId === orderId ? { ...order, status: "done" } : order
+        )
+      );
+
+      setSelectedOrder((prev) =>
+        prev?.orderId === orderId ? { ...prev, status: "done" } : prev
+      );
+
+      return { success: true, status: 200 };
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
+    }
+  };
+
   const value = {
     allOrders,
     handleGetAllOrders,
     handleRejectOrder,
+    handleApprovedOrder,
+    handleMarkOrderDone,
     selectedOrderId,
     setSelectedOrderId,
     selectedOrder,
     setSelectedOrder,
-    handleGetMyOrders,
     myOrders,
+    handleGetMyOrders,
     selectedOrderDetail,
     setSelectedOrderDetail,
-    handleApprovedOrder,
+    deliveryLink,
+    handleTrackingDelivery,
+    handleRefreshSelectedOrder,
   };
+
   return (
     <OrderContext.Provider value={value}>{children}</OrderContext.Provider>
   );

@@ -45,7 +45,7 @@ import DetailOrder2 from "./pages/DetailOrder2";
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
   // Only redirect if user is logged in and has a role
-  if (token && role === "OS") return <Navigate to="/owner-dashboard" replace />;
+  if (token && role === "OS") return <Navigate to="/all-orders" replace />;
   if (token && role === "SF") return <Navigate to="/staff-dashboard" replace />;
   return children;
 };

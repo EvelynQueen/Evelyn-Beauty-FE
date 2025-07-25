@@ -2,39 +2,40 @@ import { createContext, useState } from "react";
 import paymentAPI, { getPromotionAPI, getShippingAPI } from "../api/paymentAPI";
 import useProfile from "../hook/useProfile";
 import useCart from "../hook/useCart";
+
 export const PaymentContext = createContext(null);
+
 export const PaymentProvider = ({ children }) => {
   const { selectedCartItemsForDiscount } = useCart();
+  const { selectedProfile } = useProfile();
+
   const [discount, setDiscount] = useState([]);
-  const [selectedDiscount, setSelectedDiscount] = useState({});
+  const [selectedDiscount, setSelectedDiscount] = useState(""); // "" or object
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
-  const { selectedProfile } = useProfile();
   const [checkoutInfo, setCheckoutInfo] = useState({});
 
+  // ✅ Safe: fallback to "" if not selected
   const handlePayOS = async () => {
-    // Log dữ liệu chuẩn bị gửi lên
     const payload = {
-      profileId: selectedProfile.profileId,
-      promotionProgramId: selectedDiscount.programId,
+      profileId: selectedProfile?.profileId,
+      promotionProgramId: selectedDiscount?.programId || "", // 🔐 fallback
       items: selectedCartItemsForDiscount.map((item) => ({
         productId: item.productId,
         classificationId: item.classificationId,
         quantity: item.quantity,
       })),
     };
-    console.log("Payload gửi lên BE:", payload);
 
     try {
       const res = await paymentAPI(payload);
       setCheckoutInfo(res);
-      console.log(res);
       return { success: true, data: res, status: 200 };
     } catch (error) {
-      if (!error.response?.status) {
-        return { success: false, status: 0 };
-      }
-      return { success: false, status: error.response?.status };
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
     }
   };
 
@@ -44,14 +45,10 @@ export const PaymentProvider = ({ children }) => {
       setShippingFee(res.data.total);
       return { success: true, status: 200 };
     } catch (error) {
-      if (!error.response?.status) {
-        return { success: false, status: 0 };
-      } else {
-        return {
-          success: false,
-          status: error.status,
-        };
-      }
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
     }
   };
 
@@ -61,36 +58,35 @@ export const PaymentProvider = ({ children }) => {
       setDiscount(res.promotionPrograms);
       return { success: true, status: 200 };
     } catch (error) {
-      if (!error.response?.status) {
-        return { success: false, status: 0 };
-      } else {
-        return {
-          success: false,
-          status: error.status,
-        };
-      }
+      return {
+        success: false,
+        status: error.response?.status || 0,
+      };
     }
   };
 
-  const handleSelectDiscount = (discountId) => {
-    const selected = discount.find((item) => item.programId === discountId);
-    setSelectedDiscount(selected);
-    console.log(selected);
+  const handleSelectDiscount = (programId) => {
+    if (!programId) {
+      setSelectedDiscount(""); // reset to empty if nothing selected
+    } else {
+      const selected = discount.find((item) => item.programId === programId);
+      setSelectedDiscount(selected || "");
+    }
   };
 
   const handleResetTotalAfterDiscount = (total, discountObj) => {
-    if (discountObj?.programId && discountObj.value > 0) {
-      const discountAmount = total * discountObj.value;
-      setTotalAfterDiscount(total + shippingFee - discountAmount);
-      return discountAmount;
-    } else if (discountObj?.programId && discountObj.value == 0) {
-      setTotalAfterDiscount(total + shippingFee - shippingFee);
-      console.log(total + shippingFee - shippingFee);
-      return shippingFee;
+    if (typeof discountObj === "object" && discountObj !== null) {
+      if (discountObj.value > 0) {
+        const discountAmount = total * discountObj.value;
+        setTotalAfterDiscount(total + shippingFee - discountAmount);
+        return discountAmount;
+      } else {
+        setTotalAfterDiscount(total); // Free shipping or other logic here
+        return 0;
+      }
     } else {
       setTotalAfterDiscount(total + shippingFee);
-      console.log(total);
-      return total;
+      return 0;
     }
   };
 
