@@ -12,6 +12,8 @@ import { LocationProvider } from "./contexts/LocationContext.jsx";
 import { ProfileProvider } from "./contexts/ProflieContext.jsx";
 import { OrderProvider } from "./contexts/OrderContext.jsx";
 import { SupportProvider } from "./contexts/SupportContext.jsx";
+import { PromotionProvider } from "./contexts/PromotionContext.jsx"; // ✅ thêm dòng này
+
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
@@ -23,9 +25,13 @@ createRoot(document.getElementById("root")).render(
                 <ProfileProvider>
                   <PaymentProvider>
                     <OrderProvider>
-                      <SupportProvider>
-                        <App />
-                      </SupportProvider>
+                      <PromotionProvider>
+                        {" "}
+                        {/* ✅ thêm dòng này */}
+                        <SupportProvider>
+                          <App />
+                        </SupportProvider>
+                      </PromotionProvider>
                     </OrderProvider>
                   </PaymentProvider>
                 </ProfileProvider>

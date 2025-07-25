@@ -2,6 +2,7 @@ import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 import { RiBillLine, RiCustomerService2Line } from "react-icons/ri";
+import { RiGiftLine } from "react-icons/ri";
 
 import useAuth from "../hook/useAuth";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -64,6 +65,20 @@ const SFSideBar = () => {
               }
             >
               <RiCustomerService2Line /> <span>Supports</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/promotions"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <RiGiftLine /> <span>Promotions</span>
             </NavLink>
           </li>
         </ul>

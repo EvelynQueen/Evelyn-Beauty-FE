@@ -42,6 +42,8 @@ import VerifyStaffEmail from "./pages/VerifyStaffEmail";
 import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
 import SupportResolve from "./pages/SupportResolve";
+import PromotionProgram from "./pages/PromotionProgram";
+import AddPromotion from "./pages/AddPromotion";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -178,6 +180,18 @@ const protectedRoutes = [
   {
     path: "/support-resolve/:id",
     element: <SupportResolve />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/promotions",
+    element: <PromotionProgram />,
+    roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/add-promotion",
+    element: <AddPromotion />,
     roles: ["SF"],
     token: true,
   },
