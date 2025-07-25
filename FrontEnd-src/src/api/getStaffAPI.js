@@ -14,3 +14,16 @@ export const deleteStaffAPI = async (accountId) => {
   const res = await axios.delete(`/auth/delete/${accountId}`);
   return res.data;
 };
+
+export const addProductAPI = async (product, images) => {
+  const formData = new FormData();
+
+  formData.append("products", JSON.stringify([product]));
+
+  images.forEach((img) => {
+    formData.append("images", img);
+  });
+
+  const res = await axios.post("/products/importProduct", formData);
+  return res.data;
+};

@@ -5,6 +5,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { RiContactsBook2Line } from "react-icons/ri";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaLuggageCartSolid } from "react-icons/lia";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -62,6 +63,21 @@ const OsSideBar = () => {
               }
             >
               <AiOutlineProduct /> <span>Product</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/product-add"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <IoIosAddCircleOutline />
+              <span>Add Product</span>
             </NavLink>
           </li>
         </ul>

@@ -41,6 +41,7 @@ import StaffAdd from "./pages/StaffAdd";
 import VerifyStaffEmail from "./pages/VerifyStaffEmail";
 import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
+import AddProduct from "./pages/AddProduct";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -150,6 +151,12 @@ const protectedRoutes = [
     token: true,
   },
   {
+    path: "/product-add",
+    element: <AddProduct />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
     path: "/staff-dashboard",
     element: <StaffDashboard />,
     roles: ["SF"],
@@ -194,6 +201,7 @@ const ownerRoutes = [
   "/product-modifier",
   "/product-modifier/:productId",
   "/all-orders",
+  "/product-add",
 ];
 const staffRoutes = [
   "/staff-dashboard",
