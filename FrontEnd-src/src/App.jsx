@@ -186,13 +186,13 @@ const protectedRoutes = [
   {
     path: "/promotions",
     element: <PromotionProgram />,
-    roles: ["SF"],
+    roles: ["SF"], // hoặc ["OS"] hoặc cả hai tùy bạn muốn ai được truy cập
     token: true,
   },
   {
     path: "/add-promotion",
     element: <AddPromotion />,
-    roles: ["SF"],
+    roles: ["SF"], // hoặc ["OS", "SF"] nếu bạn muốn cả hai được phép tạo promotion
     token: true,
   },
 ];

@@ -1,7 +1,8 @@
-// src/pages/PromotionProgram.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { usePromotions } from "../hook/usePromotions";
+import { deletePromotionSF } from "../api/promotionProgramAPI"; // ✅ import đúng tên
+import { toast } from "react-toastify";
 
 const PromotionProgram = () => {
   const navigate = useNavigate();
@@ -16,6 +17,27 @@ const PromotionProgram = () => {
     return val !== undefined && val !== null
       ? `${(val * 100).toFixed(0)}%`
       : "-";
+  };
+
+  // ✅ Xử lý xoá promotion
+  const handleDelete = async (programId) => {
+    const confirm = window.confirm("Bạn có chắc muốn xoá chương trình này?");
+    if (!confirm) return;
+
+    try {
+      const res = await deletePromotionSF(programId);
+      console.log("Delete response:", res); // 👈 log kiểm tra nếu cần
+
+      if (res && res.status === 200) {
+        toast.success("Promotion deleted successfully!");
+        refetch(); // cập nhật lại danh sách
+      } else {
+        toast.error("Delete failed!");
+      }
+    } catch (err) {
+      toast.error("Server error while deleting.");
+      console.error("Lỗi khi xoá promotion:", err);
+    }
   };
 
   return (
@@ -68,11 +90,10 @@ const PromotionProgram = () => {
                   <td className="p-2 border">{formatDate(promo.startDate)}</td>
                   <td className="p-2 border">{formatDate(promo.endDate)}</td>
                   <td className="p-2 border">{promo.accountId}</td>
-                  <td className="p-2 border text-red-600 cursor-pointer">
+                  <td className="p-2 border text-red-600">
                     <button
-                      onClick={() =>
-                        handleDeletePromotion(promo.programId, refetch)
-                      }
+                      className="hover:underline"
+                      onClick={() => handleDelete(promo.programId)}
                     >
                       Delete
                     </button>
