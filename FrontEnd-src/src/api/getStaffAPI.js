@@ -27,3 +27,9 @@ export const addProductAPI = async (product, images) => {
   const res = await axios.post("/products/importProduct", formData);
   return res.data;
 };
+export const deleteProductAPI = async (productId) => {
+  const res = await axios.delete(
+    `http://localhost:3000/api/products/deleteProduct?productId=${productId}`
+  );
+  return res.data.data;
+};

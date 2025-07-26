@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
-import { addProductAPI } from "../api/getStaffAPI";
+import { addProductAPI, deleteProductAPI } from "../api/getStaffAPI";
 
 export const ProductContext = createContext();
 
@@ -19,11 +19,28 @@ const ProductProvider = ({ children }) => {
       return { success: false };
     }
   };
+  // 2. Thêm hàm handleDeleteProduct
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await deleteProductAPI(productId);
+
+      // SỬA DÒNG NÀY:
+      // Thêm "product &&" để kiểm tra trước khi truy cập product.id
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product && product.id !== productId)
+      );
+
+      toast.success("Product deleted successfully!");
+    } catch (error) {
+      toast.error(error?.message || "Failed to delete product");
+    }
+  };
 
   const value = {
     currency,
     products,
     handleAddProduct,
+    handleDeleteProduct,
   };
 
   return (
