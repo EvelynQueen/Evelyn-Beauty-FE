@@ -223,6 +223,8 @@ const ownerRoutes = [
   "/product-modifier/:productId",
   "/all-orders",
   "/product-add",
+  "/promotions",
+  "/add-promotion",
 ];
 const staffRoutes = [
   "/staff-dashboard",
