@@ -43,6 +43,8 @@ import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
 import AddProduct from "./pages/AddProduct";
 import SupportResolve from "./pages/SupportResolve";
+import PromotionProgram from "./pages/PromotionProgram";
+import AddPromotion from "./pages/AddPromotion";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -186,6 +188,18 @@ const protectedRoutes = [
     path: "/support-resolve/:id",
     element: <SupportResolve />,
     roles: ["SF"],
+    token: true,
+  },
+  {
+    path: "/promotions",
+    element: <PromotionProgram />,
+    roles: ["OS"], // hoặc ["OS"] hoặc cả hai tùy bạn muốn ai được truy cập
+    token: true,
+  },
+  {
+    path: "/add-promotion",
+    element: <AddPromotion />,
+    roles: ["OS"], // hoặc ["OS", "SF"] nếu bạn muốn cả hai được phép tạo promotion
     token: true,
   },
 ];

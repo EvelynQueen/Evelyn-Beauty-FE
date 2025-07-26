@@ -6,6 +6,7 @@ import { RiContactsBook2Line } from "react-icons/ri";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaLuggageCartSolid } from "react-icons/lia";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { BsFillTagsFill } from "react-icons/bs"; // 1. Import icon mới cho Promotions
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -78,6 +79,20 @@ const OsSideBar = () => {
             >
               <IoIosAddCircleOutline />
               <span>Add Product</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/promotions"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <BsFillTagsFill /> <span>Promotions</span>
             </NavLink>
           </li>
         </ul>
