@@ -5,6 +5,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { RiContactsBook2Line } from "react-icons/ri";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaLuggageCartSolid } from "react-icons/lia";
+import { BsFillTagsFill } from "react-icons/bs"; // 1. Import icon mới cho Promotions
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -64,16 +65,31 @@ const OsSideBar = () => {
               <AiOutlineProduct /> <span>Product</span>
             </NavLink>
           </li>
+          {/* 2. Thêm mục Promotions vào danh sách */}
+          <li>
+            <NavLink
+              to="/promotions"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <BsFillTagsFill /> <span>Promotions</span>
+            </NavLink>
+          </li>
         </ul>
       </div>
 
       {/* Logout */}
       <div
         onClick={logout}
-        className="flex justify-start items-center p-2 rounded hover:bg-gray-700 cursor-pointer mb-2"
+        className="w-full flex items-center justify-center gap-3 p-2 rounded hover:bg-gray-700 cursor-pointer mb-2"
       >
-        Logout
         <IoLogOutOutline />
+        <span>Logout</span>
       </div>
     </div>
   );

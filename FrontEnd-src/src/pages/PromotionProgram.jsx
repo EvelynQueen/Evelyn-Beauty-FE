@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { usePromotions } from "../hook/usePromotions";
-import { deletePromotionSF } from "../api/promotionProgramAPI"; // ✅ import đúng tên
+import { deletePromotionSF } from "../api/promotionProgramAPI";
 import { toast } from "react-toastify";
 
 const PromotionProgram = () => {
@@ -10,29 +10,34 @@ const PromotionProgram = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
-    return new Date(dateString).toLocaleString();
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
-  const formatValue = (val) => {
-    return val !== undefined && val !== null
-      ? `${(val * 100).toFixed(0)}%`
-      : "-";
+  const formatValue = (val, type) => {
+    if (val === null || val === undefined) return "-";
+    if (type === "VND") {
+      return `${Number(val).toLocaleString("vi-VN")} VND`;
+    }
+    return `${(val * 100).toFixed(0)}%`;
   };
 
-  // ✅ Xử lý xoá promotion
   const handleDelete = async (programId) => {
-    const confirm = window.confirm("Bạn có chắc muốn xoá chương trình này?");
-    if (!confirm) return;
+    const confirmDelete = window.confirm(
+      "Bạn có chắc muốn xoá chương trình này?"
+    );
+    if (!confirmDelete) return;
 
     try {
       const res = await deletePromotionSF(programId);
-      console.log("Delete response:", res); // 👈 log kiểm tra nếu cần
-
       if (res && res.status === 200) {
         toast.success("Promotion deleted successfully!");
-        refetch(); // cập nhật lại danh sách
+        refetch();
       } else {
-        toast.error("Delete failed!");
+        toast.error(res?.data?.message || "Delete failed!");
       }
     } catch (err) {
       toast.error("Server error while deleting.");
@@ -41,67 +46,85 @@ const PromotionProgram = () => {
   };
 
   return (
-    <div className="p-4">
-      <button
-        onClick={() => navigate("/add-promotion")}
-        className="bg-black text-white px-4 py-2 rounded mb-4"
-      >
-        + Add Promotion
-      </button>
-
-      <h2 className="text-2xl font-semibold text-green-700 mb-4">
-        Promotion Program List
-      </h2>
+    <div className="p-4 sm:p-6 md:p-8 bg-gray-50 min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Promotion Program List
+        </h1>
+        <button
+          onClick={() => navigate("/add-promotion")}
+          className="bg-black text-white px-5 py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+        >
+          + Add Promotion
+        </button>
+      </div>
 
       {loading ? (
         <p>Loading promotions...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg shadow">
-          <table className="min-w-full text-sm table-auto border-collapse rounded-lg overflow-hidden">
-            <thead className="bg-green-100 text-left text-sm">
-              <tr>
-                <th className="p-2 border">Program ID</th>
-                <th className="p-2 border">Name</th>
-                <th className="p-2 border">Condition 1</th>
-                <th className="p-2 border">Condition 2</th>
-                <th className="p-2 border">Value</th>
-                <th className="p-2 border">Start Date</th>
-                <th className="p-2 border">End Date</th>
-                <th className="p-2 border">Created By</th>
-                <th className="p-2 border">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {promotions.map((promo) => (
-                <tr key={promo.programId} className="hover:bg-gray-100">
-                  <td className="p-2 border">{promo.programId}</td>
-                  <td className="p-2 border">{promo.name}</td>
-                  <td className="p-2 border">
-                    {promo.condition1
-                      ? Number(promo.condition1).toLocaleString()
-                      : "-"}
-                  </td>
-                  <td className="p-2 border">
-                    {promo.condition2 ? promo.condition2 : "-"}
-                  </td>
-                  <td className="p-2 border">{formatValue(promo.value)}</td>
-                  <td className="p-2 border">{formatDate(promo.startDate)}</td>
-                  <td className="p-2 border">{formatDate(promo.endDate)}</td>
-                  <td className="p-2 border">{promo.accountId}</td>
-                  <td className="p-2 border text-red-600">
-                    <button
-                      className="hover:underline"
-                      onClick={() => handleDelete(promo.programId)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          {/* Header - Thay đổi thành grid-cols-10 */}
+          <div className="hidden md:grid grid-cols-10 gap-4 px-6 py-3 bg-indigo-100 text-left text-xs font-semibold text-indigo-800 uppercase tracking-wider">
+            <div className="col-span-1">Program ID</div>
+            <div className="col-span-2">Name</div>
+            <div className="col-span-1">Condition 1</div>
+            <div className="col-span-1">Condition 2</div> {/* THÊM CỘT MỚI */}
+            <div className="col-span-1">Value</div>
+            <div className="col-span-1">Start Date</div>
+            <div className="col-span-1">End Date</div>
+            <div className="col-span-1">Created By</div>
+            <div className="col-span-1 text-center">Action</div>
+          </div>
+
+          {/* Body */}
+          <div className="flex flex-col">
+            {promotions.map((promo) => (
+              <div
+                key={promo.programId}
+                // Thay đổi thành grid-cols-10
+                className="grid grid-cols-1 md:grid-cols-10 gap-4 px-6 py-3 items-center border-t border-gray-200 hover:bg-gray-50 text-sm"
+              >
+                <div className="md:col-span-1 font-semibold text-blue-600 hover:underline cursor-pointer truncate">
+                  <span className="md:hidden font-bold mr-2 text-gray-600">
+                    ID:
+                  </span>
+                  {promo.programId}
+                </div>
+                <div className="md:col-span-2 text-gray-900 font-medium truncate">
+                  {promo.name}
+                </div>
+                <div className="md:col-span-1 text-gray-700">
+                  {formatValue(promo.condition1, "VND")}
+                </div>
+                {/* THÊM DỮ LIỆU CHO CỘT MỚI */}
+                <div className="md:col-span-1 text-gray-700">
+                  {promo.condition2 || "-"}
+                </div>
+                <div className="md:col-span-1 font-bold text-green-600">
+                  {formatValue(promo.value, "PERCENT")}
+                </div>
+                <div className="md:col-span-1 text-gray-600">
+                  {formatDate(promo.startDate)}
+                </div>
+                <div className="md:col-span-1 text-gray-600">
+                  {formatDate(promo.endDate)}
+                </div>
+                <div className="md:col-span-1 text-gray-700 truncate">
+                  {promo.accountId}
+                </div>
+                <div className="md:col-span-1 text-center">
+                  <button
+                    onClick={() => handleDelete(promo.programId)}
+                    className="font-semibold text-red-500 hover:text-red-700 transition-colors hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

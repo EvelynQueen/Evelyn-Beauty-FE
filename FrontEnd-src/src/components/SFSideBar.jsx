@@ -67,20 +67,6 @@ const SFSideBar = () => {
               <RiCustomerService2Line /> <span>Supports</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/promotions"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded ${
-                  isActive
-                    ? "bg-white/20"
-                    : " hover:bg-gray-700 transition-colors"
-                }`
-              }
-            >
-              <RiGiftLine /> <span>Promotions</span>
-            </NavLink>
-          </li>
         </ul>
       </div>
 

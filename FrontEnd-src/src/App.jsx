@@ -186,13 +186,13 @@ const protectedRoutes = [
   {
     path: "/promotions",
     element: <PromotionProgram />,
-    roles: ["SF"], // hoặc ["OS"] hoặc cả hai tùy bạn muốn ai được truy cập
+    roles: ["OS"], // hoặc ["OS"] hoặc cả hai tùy bạn muốn ai được truy cập
     token: true,
   },
   {
     path: "/add-promotion",
     element: <AddPromotion />,
-    roles: ["SF"], // hoặc ["OS", "SF"] nếu bạn muốn cả hai được phép tạo promotion
+    roles: ["OS"], // hoặc ["OS", "SF"] nếu bạn muốn cả hai được phép tạo promotion
     token: true,
   },
 ];
@@ -215,6 +215,8 @@ const ownerRoutes = [
   "/product-modifier",
   "/product-modifier/:productId",
   "/all-orders",
+  "/promotions",
+  "/add-promotion",
 ];
 const staffRoutes = [
   "/staff-dashboard",
