@@ -44,6 +44,7 @@ import DetailOrder2 from "./pages/DetailOrder2";
 import AddProduct from "./pages/AddProduct";
 import SupportResolve from "./pages/SupportResolve";
 import AllRefund from "./pages/AllRefund";
+import RefundsDetail from "./pages/RefundsDetail";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -159,6 +160,12 @@ const protectedRoutes = [
     token: true,
   },
   {
+    path: "/refunds/:orderId",
+    element: <RefundsDetail />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
     path: "/product-add",
     element: <AddProduct />,
     roles: ["OS"],
@@ -217,6 +224,7 @@ const ownerRoutes = [
   "/all-orders",
   "/product-add",
   "/refunds",
+  "/refunds/:orderId",
 ];
 const staffRoutes = [
   "/staff-dashboard",
