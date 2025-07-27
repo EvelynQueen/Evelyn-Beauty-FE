@@ -12,26 +12,29 @@ import { LocationProvider } from "./contexts/LocationContext.jsx";
 import { ProfileProvider } from "./contexts/ProflieContext.jsx";
 import { OrderProvider } from "./contexts/OrderContext.jsx";
 import { SupportProvider } from "./contexts/SupportContext.jsx";
+import { PromotionProvider } from "./contexts/PromotionContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
       <RegisterProvider>
         <ProductProvider>
-          <CartProvider>
-            <StaffProvider>
-              <LocationProvider>
-                <ProfileProvider>
-                  <PaymentProvider>
-                    <OrderProvider>
-                      <SupportProvider>
-                        <App />
-                      </SupportProvider>
-                    </OrderProvider>
-                  </PaymentProvider>
-                </ProfileProvider>
-              </LocationProvider>
-            </StaffProvider>
-          </CartProvider>
+          <PromotionProvider>
+            <CartProvider>
+              <StaffProvider>
+                <LocationProvider>
+                  <ProfileProvider>
+                    <PaymentProvider>
+                      <OrderProvider>
+                        <SupportProvider>
+                          <App />
+                        </SupportProvider>
+                      </OrderProvider>
+                    </PaymentProvider>
+                  </ProfileProvider>
+                </LocationProvider>
+              </StaffProvider>
+            </CartProvider>
+          </PromotionProvider>
         </ProductProvider>
       </RegisterProvider>
     </AuthProvider>

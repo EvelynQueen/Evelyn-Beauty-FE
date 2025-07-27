@@ -45,6 +45,8 @@ import AddProduct from "./pages/AddProduct";
 import SupportResolve from "./pages/SupportResolve";
 import AllRefund from "./pages/AllRefund";
 import RefundsDetail from "./pages/RefundsDetail";
+import PromotionProgram from "./pages/PromotionProgram";
+import AddPromotion from "./pages/AddPromotion";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
@@ -202,6 +204,18 @@ const protectedRoutes = [
     roles: ["SF"],
     token: true,
   },
+  {
+    path: "/promotions",
+    element: <PromotionProgram />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/add-promotion",
+    element: <AddPromotion />,
+    roles: ["OS"],
+    token: true,
+  },
 ];
 
 // routes that hide navbar
@@ -225,6 +239,8 @@ const ownerRoutes = [
   "/product-add",
   "/refunds",
   "/refunds/:orderId",
+  "/promotions",
+  "/add-promotion",
 ];
 const staffRoutes = [
   "/staff-dashboard",
