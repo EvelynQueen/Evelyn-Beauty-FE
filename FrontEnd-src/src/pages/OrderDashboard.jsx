@@ -4,6 +4,22 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import useProduct from "../hook/useProduct";
 
+const statusLabels = {
+  refund: "Waiting for Refund",
+  cancel: "Cancelled",
+  in_transit: "In Transit",
+  delivered: "Delivered",
+  done: "Done",
+};
+
+const statusStyles = {
+  refund: "bg-orange-100 text-orange-700",
+  cancel: "bg-red-100 text-red-700",
+  in_transit: "bg-yellow-100 text-yellow-800",
+  delivered: "bg-sky-200 text-sky-800",
+  done: "bg-green-100 text-green-700",
+};
+
 const OrderDashboard = () => {
   const { allOrders, handleGetAllOrders, setSelectedOrder } = useOrder();
   const { currency } = useProduct();
@@ -70,7 +86,7 @@ const OrderDashboard = () => {
 
   return (
     <div className="w-full flex flex-col justify-start items-center p-10">
-      {/* Filter Controls */}
+      {/* Filters */}
       <div className="w-full max-w-5xl bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-4 mb-6">
         <div className="flex flex-col lg:flex-row flex-wrap items-center justify-between gap-4">
           {/* Order ID Filter */}
@@ -87,8 +103,8 @@ const OrderDashboard = () => {
             />
           </div>
 
-          {/* Order From Date */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+          {/* From Date */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <label className="text-sm font-medium text-gray-700">
               📆 From:
             </label>
@@ -100,8 +116,8 @@ const OrderDashboard = () => {
             />
           </div>
 
-          {/* Order To Date */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+          {/* To Date */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <label className="text-sm font-medium text-gray-700">➡️ To:</label>
             <input
               type="date"
@@ -112,7 +128,7 @@ const OrderDashboard = () => {
           </div>
 
           {/* Status Filter */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <label className="text-sm font-medium text-gray-700">
               📦 Status:
             </label>
@@ -122,17 +138,16 @@ const OrderDashboard = () => {
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="">All</option>
-              <option value="return_requested">Declined</option>
+              <option value="refund">Waiting for Refund</option>
               <option value="cancel">Cancelled</option>
-              <option value="in_transit">Waiting</option>
-              <option value="delivered">Delivering</option>
+              <option value="in_transit">In Transit</option>
+              <option value="delivered">Delivered</option>
               <option value="done">Done</option>
-              <option value="refund">Waiting for refund</option>
             </select>
           </div>
         </div>
 
-        {/* Clear Filter Button */}
+        {/* Clear Button */}
         <div className="flex justify-end mt-4">
           <button
             onClick={handleClearFilters}
@@ -143,13 +158,13 @@ const OrderDashboard = () => {
         </div>
       </div>
 
-      {/* Orders Table */}
+      {/* Table */}
       {filteredOrders.length === 0 ? (
         <div className="text-gray-500 text-lg font-medium italic">
           🚫 No Orders match your filter!
         </div>
       ) : (
-        <div className="w-full rounded-xl overflow-hidden border border-gray-300 shadow-md caret-transparent">
+        <div className="w-full rounded-xl overflow-hidden border border-gray-300 shadow-md">
           <table className="table-auto w-full text-center border-collapse">
             <thead className="bg-gradient-to-r from-green-100 to-green-200 text-gray-700 font-semibold text-sm uppercase tracking-wider">
               <tr>
@@ -157,12 +172,8 @@ const OrderDashboard = () => {
                 <th className="border border-gray-200 px-6 py-3">
                   Shipping Info
                 </th>
-                <th className="border border-gray-200 px-6 py-3">
-                  Payment Date
-                </th>
-                <th className="border border-gray-200 px-6 py-3">
-                  Payment Time
-                </th>
+                <th className="border border-gray-200 px-6 py-3">Date</th>
+                <th className="border border-gray-200 px-6 py-3">Time</th>
                 <th className="border border-gray-200 px-6 py-3">Total</th>
                 <th className="border border-gray-200 px-6 py-3">Status</th>
               </tr>
@@ -185,10 +196,8 @@ const OrderDashboard = () => {
                     </Link>
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
-                    {order.deliveryId == null ? (
+                    {order.deliveryId ?? (
                       <span className="text-gray-500 italic">No shipping</span>
-                    ) : (
-                      order.deliveryId
                     )}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
@@ -201,41 +210,17 @@ const OrderDashboard = () => {
                       hour12: true,
                     })}
                   </td>
-                  <td className="border border-gray-200 px-6 py-4 text-green-700 font-semibold">
+                  <td className="border text-green-700 font-semibold border-gray-200 px-6 py-4">
                     {Number(order.total_final).toLocaleString()} {currency}
                   </td>
                   <td className="border border-gray-200 px-6 py-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
-                        ${
-                          order.status === "refund"
-                            ? "bg-orange-100 text-orange-700"
-                            : order.status === "return_requested" ||
-                              order.status === "cancel"
-                            ? "bg-red-100 text-red-700"
-                            : order.status === "return_approved"
-                            ? "bg-blue-100 text-blue-700"
-                            : order.status === "in_transit"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : order.status === "delivered"
-                            ? "bg-sky-200 text-sky-800"
-                            : order.status === "done"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        statusStyles[order.status] ||
+                        "bg-gray-100 text-gray-700"
+                      }`}
                     >
-                      {order.status === "refund"
-                        ? "Waiting for refund"
-                        : order.status === "return_requested" ||
-                          order.status === "cancel"
-                        ? "Declined"
-                        : order.status === "delivered"
-                        ? "Delivering"
-                        : order.status === "in_transit"
-                        ? "Waiting"
-                        : order.status === "done"
-                        ? "Done"
-                        : order.status}
+                      {statusLabels[order.status] || order.status}
                     </span>
                   </td>
                 </tr>

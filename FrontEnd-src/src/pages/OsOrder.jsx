@@ -4,6 +4,22 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import useProduct from "../hook/useProduct";
 
+const statusLabels = {
+  refund: "Waiting for Refund",
+  cancel: "Cancelled",
+  in_transit: "In Transit",
+  delivered: "Delivered",
+  done: "Done",
+};
+
+const statusStyles = {
+  refund: "bg-orange-100 text-orange-700",
+  cancel: "bg-red-100 text-red-700",
+  in_transit: "bg-yellow-100 text-yellow-800",
+  delivered: "bg-sky-200 text-sky-800",
+  done: "bg-green-100 text-green-700",
+};
+
 const OsOrder = () => {
   const { allOrders, handleGetAllOrders, setSelectedOrder } = useOrder();
   const { currency } = useProduct();
@@ -39,11 +55,14 @@ const OsOrder = () => {
         : true;
 
       const matchStatus = statusFilter ? order.status === statusFilter : true;
+
       const matchDate = dateFilter
         ? new Date(order.date).toLocaleDateString("vi-VN") === dateFilter
         : true;
+
       return matchOrderId && matchStatus && matchDate;
     });
+
     setFilteredOrders(filtered);
   }, [allOrders, orderIdFilter, statusFilter, dateFilter]);
 
@@ -100,18 +119,17 @@ const OsOrder = () => {
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="">All</option>
-              <option value="return_requested">Declined</option>
+              <option value="refund">Waiting for Refund</option>
               <option value="cancel">Cancelled</option>
-              <option value="in_transit">Waiting</option>
-              <option value="delivered">Delivering</option>
+              <option value="in_transit">In Transit</option>
+              <option value="delivered">Delivered</option>
               <option value="done">Done</option>
-              <option value="refund">Waiting for refund</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Orders Table */}
       {filteredOrders.length === 0 ? (
         <div className="text-gray-500 text-lg font-medium italic">
           🚫 No Orders match your filter!
@@ -176,36 +194,11 @@ const OsOrder = () => {
                   <td className="border border-gray-200 px-6 py-4">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        order.status === "refund"
-                          ? "bg-orange-100 text-orange-700"
-                          : order.status === "return_requested" ||
-                            order.status === "cancel"
-                          ? "bg-red-100 text-red-700"
-                          : order.status === "return_approved"
-                          ? "bg-sky-100 text-sky-700"
-                          : order.status === "in_transit"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : order.status === "delivered"
-                          ? "bg-sky-200 text-sky-800"
-                          : order.status === "done"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-700"
+                        statusStyles[order.status] ||
+                        "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {order.status === "refund"
-                        ? "Waiting for refund"
-                        : order.status === "return_requested" ||
-                          order.status === "cancel"
-                        ? "Declined"
-                        : order.status === "return_approved"
-                        ? "Packing & Delivering"
-                        : order.status === "in_transit"
-                        ? "Waiting"
-                        : order.status === "delivered"
-                        ? "Delivering"
-                        : order.status === "done"
-                        ? "Done"
-                        : order.status}
+                      {statusLabels[order.status] || order.status}
                     </span>
                   </td>
                 </tr>
