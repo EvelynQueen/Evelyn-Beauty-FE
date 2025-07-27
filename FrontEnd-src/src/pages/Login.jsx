@@ -46,7 +46,7 @@ const Login = () => {
       if (userRole === "OS") {
         navigate("/all-orders", { replace: true });
       } else if (userRole === "SF" || userRole === "AD") {
-        navigate("/staff-dashboard", { replace: true });
+        navigate("/order-dashboard", { replace: true });
       } else {
         navigate(from, { replace: true });
       }

@@ -6,6 +6,7 @@ import { RiContactsBook2Line } from "react-icons/ri";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaLuggageCartSolid } from "react-icons/lia";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { RiRefund2Line } from "react-icons/ri";
 
 const OsSideBar = () => {
   const { logout } = useAuth();
@@ -35,6 +36,20 @@ const OsSideBar = () => {
               }
             >
               <LiaLuggageCartSolid /> <span>Orders</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/refunds"
+              className={({ isActive }) =>
+                `flex items-center gap-3 p-2 rounded ${
+                  isActive
+                    ? "bg-white/20"
+                    : " hover:bg-gray-700 transition-colors"
+                }`
+              }
+            >
+              <RiRefund2Line /> <span>Refunds</span>
             </NavLink>
           </li>
           <li>

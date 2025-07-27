@@ -10,8 +10,9 @@ const OrderDashboard = () => {
 
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
   const [orderIdFilter, setOrderIdFilter] = useState("");
+  const [orderFrom, setOrderFrom] = useState("");
+  const [orderTo, setOrderTo] = useState("");
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -34,6 +35,10 @@ const OrderDashboard = () => {
 
   useEffect(() => {
     const filtered = allOrders.filter((order) => {
+      const orderDate = new Date(order.date);
+      const fromDate = orderFrom ? new Date(orderFrom) : null;
+      const toDate = orderTo ? new Date(orderTo) : null;
+
       const matchOrderId = orderIdFilter
         ? order.orderId
             .toLowerCase()
@@ -41,19 +46,26 @@ const OrderDashboard = () => {
         : true;
 
       const matchStatus = statusFilter ? order.status === statusFilter : true;
-      const matchDate = dateFilter
-        ? new Date(order.date).toLocaleDateString("vi-VN") === dateFilter
-        : true;
 
-      return matchOrderId && matchStatus && matchDate;
+      const matchFrom = fromDate ? orderDate >= fromDate : true;
+      const matchTo = toDate ? orderDate <= toDate : true;
+
+      return matchOrderId && matchStatus && matchFrom && matchTo;
     });
 
     setFilteredOrders(filtered);
-  }, [allOrders, orderIdFilter, statusFilter, dateFilter]);
+  }, [allOrders, orderIdFilter, statusFilter, orderFrom, orderTo]);
 
   const handleSelectOrder = (order) => {
     setSelectedOrder(order);
     localStorage.setItem("selectedOrder", JSON.stringify(order));
+  };
+
+  const handleClearFilters = () => {
+    setOrderIdFilter("");
+    setStatusFilter("");
+    setOrderFrom("");
+    setOrderTo("");
   };
 
   return (
@@ -75,21 +87,27 @@ const OrderDashboard = () => {
             />
           </div>
 
-          {/* Date Filter */}
+          {/* Order From Date */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
             <label className="text-sm font-medium text-gray-700">
-              📅 Date:
+              📆 From:
             </label>
             <input
               type="date"
               className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-              onChange={(e) => {
-                const selected = e.target.value;
-                const vnFormat = selected
-                  ? new Date(selected).toLocaleDateString("vi-VN")
-                  : "";
-                setDateFilter(vnFormat);
-              }}
+              value={orderFrom}
+              onChange={(e) => setOrderFrom(e.target.value)}
+            />
+          </div>
+
+          {/* Order To Date */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+            <label className="text-sm font-medium text-gray-700">➡️ To:</label>
+            <input
+              type="date"
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              value={orderTo}
+              onChange={(e) => setOrderTo(e.target.value)}
             />
           </div>
 
@@ -109,12 +127,23 @@ const OrderDashboard = () => {
               <option value="in_transit">Waiting</option>
               <option value="delivered">Delivering</option>
               <option value="done">Done</option>
+              <option value="refund">Waiting for refund</option>
             </select>
           </div>
         </div>
+
+        {/* Clear Filter Button */}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleClearFilters}
+            className="text-sm px-4 py-2 rounded-md border border-pink-300 bg-pink-50 hover:bg-pink-100 text-pink-700 font-medium transition"
+          >
+            🔄 Clear Filters
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
+      {/* Orders Table */}
       {filteredOrders.length === 0 ? (
         <div className="text-gray-500 text-lg font-medium italic">
           🚫 No Orders match your filter!
@@ -155,7 +184,6 @@ const OrderDashboard = () => {
                       {order.orderId}
                     </Link>
                   </td>
-
                   <td className="border border-gray-200 px-6 py-4">
                     {order.deliveryId == null ? (
                       <span className="text-gray-500 italic">No shipping</span>
@@ -163,11 +191,9 @@ const OrderDashboard = () => {
                       order.deliveryId
                     )}
                   </td>
-
                   <td className="border border-gray-200 px-6 py-4">
                     {new Date(order.date).toLocaleDateString("vi-VN")}
                   </td>
-
                   <td className="border border-gray-200 px-6 py-4">
                     {new Date(order.date).toLocaleTimeString("vi-VN", {
                       hour: "2-digit",
@@ -175,17 +201,17 @@ const OrderDashboard = () => {
                       hour12: true,
                     })}
                   </td>
-
                   <td className="border border-gray-200 px-6 py-4 text-green-700 font-semibold">
                     {Number(order.total_final).toLocaleString()} {currency}
                   </td>
-
                   <td className="border border-gray-200 px-6 py-4">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
                         ${
-                          order.status === "return_requested" ||
-                          order.status === "cancel"
+                          order.status === "refund"
+                            ? "bg-orange-100 text-orange-700"
+                            : order.status === "return_requested" ||
+                              order.status === "cancel"
                             ? "bg-red-100 text-red-700"
                             : order.status === "return_approved"
                             ? "bg-blue-100 text-blue-700"
@@ -198,8 +224,10 @@ const OrderDashboard = () => {
                             : "bg-gray-100 text-gray-700"
                         }`}
                     >
-                      {order.status === "return_requested" ||
-                      order.status === "cancel"
+                      {order.status === "refund"
+                        ? "Waiting for refund"
+                        : order.status === "return_requested" ||
+                          order.status === "cancel"
                         ? "Declined"
                         : order.status === "delivered"
                         ? "Delivering"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useOrder from "../hook/useOrder";
 import { toast } from "react-toastify";
 import Heading from "../components/Heading";
@@ -9,6 +9,13 @@ import Footer from "../components/Footer";
 const Order = () => {
   const { myOrders, handleGetMyOrders, setSelectedOrderDetail } = useOrder();
   const navigate = useNavigate();
+
+  const [filterFromDate, setFilterFromDate] = useState("");
+  const [filterToDate, setFilterToDate] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterOrderId, setFilterOrderId] = useState("");
+  const [filterMinAmount, setFilterMinAmount] = useState("");
+  const [filterMaxAmount, setFilterMaxAmount] = useState("");
 
   const getMyOrder = async () => {
     const res = await handleGetMyOrders();
@@ -68,12 +75,117 @@ const Order = () => {
     }
   };
 
+  const filteredOrders = myOrders.filter((order) => {
+    const orderDate = new Date(order.date);
+    const totalAmount = order.details.reduce(
+      (sum, item) => sum + item.total,
+      0
+    );
+    const isDateMatch =
+      (!filterFromDate || orderDate >= new Date(filterFromDate)) &&
+      (!filterToDate || orderDate <= new Date(filterToDate));
+    const isStatusMatch = !filterStatus || order.status === filterStatus;
+    const isOrderIdMatch =
+      !filterOrderId ||
+      order.orderId.toLowerCase().includes(filterOrderId.toLowerCase());
+    const isAmountMatch =
+      (!filterMinAmount || totalAmount >= filterMinAmount) &&
+      (!filterMaxAmount || totalAmount <= filterMaxAmount);
+
+    return isDateMatch && isStatusMatch && isOrderIdMatch && isAmountMatch;
+  });
+
   return (
     <div className="w-full">
       <div className="w-full px-4 py-6 caret-transparent mb-20">
         <Heading icons={FaMoneyBillWave} title="List Orders" />
 
-        {myOrders && myOrders.length > 0 ? (
+        {/* Filter Section */}
+        <div className="mb-6 flex gap-4">
+          <div>
+            <label htmlFor="fromDate" className="text-sm">
+              From Date
+            </label>
+            <input
+              id="fromDate"
+              type="date"
+              value={filterFromDate}
+              onChange={(e) => setFilterFromDate(e.target.value)}
+              className="border p-2 rounded-md"
+            />
+          </div>
+          <div>
+            <label htmlFor="toDate" className="text-sm">
+              To Date
+            </label>
+            <input
+              id="toDate"
+              type="date"
+              value={filterToDate}
+              onChange={(e) => setFilterToDate(e.target.value)}
+              className="border p-2 rounded-md"
+            />
+          </div>
+          <div>
+            <label htmlFor="status" className="text-sm">
+              Status
+            </label>
+            <select
+              id="status"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="border p-2 rounded-md"
+            >
+              <option value="">All</option>
+              <option value="cancel">Cancel</option>
+              <option value="return_requested">Declined</option>
+              <option value="done">Done</option>
+              <option value="delivered">Delivering</option>
+              <option value="in_transit">Waiting</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="orderId" className="text-sm">
+              Order ID
+            </label>
+            <input
+              id="orderId"
+              type="text"
+              value={filterOrderId}
+              onChange={(e) => setFilterOrderId(e.target.value)}
+              className="border p-2 rounded-md"
+              placeholder="Search by Order ID"
+            />
+          </div>
+          <div>
+            <label htmlFor="minAmount" className="text-sm">
+              Min Total Amount
+            </label>
+            <input
+              id="minAmount"
+              type="number"
+              value={filterMinAmount}
+              onChange={(e) => setFilterMinAmount(e.target.value)}
+              className="border p-2 rounded-md"
+              placeholder="Min Amount"
+            />
+          </div>
+          <div>
+            <label htmlFor="maxAmount" className="text-sm">
+              Max Total Amount
+            </label>
+            <input
+              id="maxAmount"
+              type="number"
+              value={filterMaxAmount}
+              onChange={(e) => setFilterMaxAmount(e.target.value)}
+              className="border p-2 rounded-md"
+              placeholder="Max Amount"
+            />
+          </div>
+        </div>
+
+        {filteredOrders && filteredOrders.length > 0 ? (
           <div className="mt-6 overflow-x-auto border-gray-300">
             <table className="w-full text-sm border border-gray-300 border-collapse table-fixed rounded-md overflow-hidden ">
               <thead>
@@ -96,7 +208,7 @@ const Order = () => {
                 </tr>
               </thead>
               <tbody>
-                {myOrders.map((order, index) => {
+                {filteredOrders.map((order, index) => {
                   const totalAmount = order.details.reduce(
                     (sum, item) => sum + item.total,
                     0
@@ -142,7 +254,7 @@ const Order = () => {
             <p className="text-lg font-medium mb-4">You have no orders yet</p>
             <Link
               to="/cart"
-              className="border border-black px-6 py-2 text-sm font-medium hover:underline"
+              className="border rounded-md border-black px-6 py-2 text-sm font-medium hover:bg-black hover:text-white transition-all duration-150"
             >
               Go Shopping
             </Link>

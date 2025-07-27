@@ -43,12 +43,13 @@ import OsOrder from "./pages/OsOrder";
 import DetailOrder2 from "./pages/DetailOrder2";
 import AddProduct from "./pages/AddProduct";
 import SupportResolve from "./pages/SupportResolve";
+import AllRefund from "./pages/AllRefund";
 // Redirect non-CU users to their dashboard
 const RedirectIfRole = ({ children }) => {
   const { role, token } = useAuth();
   // Only redirect if user is logged in and has a role
   if (token && role === "OS") return <Navigate to="/all-orders" replace />;
-  if (token && role === "SF") return <Navigate to="/staff-dashboard" replace />;
+  if (token && role === "SF") return <Navigate to="/order-dashboard" replace />;
   return children;
 };
 
@@ -118,6 +119,12 @@ const protectedRoutes = [
   {
     path: "/staff-add",
     element: <StaffAdd />,
+    roles: ["OS"],
+    token: true,
+  },
+  {
+    path: "/refunds",
+    element: <AllRefund />,
     roles: ["OS"],
     token: true,
   },
@@ -209,6 +216,7 @@ const ownerRoutes = [
   "/product-modifier/:productId",
   "/all-orders",
   "/product-add",
+  "/refunds",
 ];
 const staffRoutes = [
   "/staff-dashboard",

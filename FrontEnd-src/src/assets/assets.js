@@ -34,7 +34,7 @@ import paymentFailed from "./paymentFailed.jpg";
 import Shipping from "./Shipping.png";
 import VNPAY from "./VNPAY.png";
 import forgotPassword from "./forgot-password.jpg";
-
+import payos from "./payos.svg";
 export const assets = {
   banner_aboutUs,
   hairCare_home,
@@ -72,4 +72,5 @@ export const assets = {
   Shipping,
   VNPAY,
   forgotPassword,
+  payos,
 };

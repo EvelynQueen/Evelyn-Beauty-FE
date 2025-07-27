@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
+import Footer from "../components/Footer";
 
 const PaymentSuccess = () => {
   return (
-    <>
-      <div className="hidden sm:flex w-full flex-row justify-between items-center border border-gray-300 rounded-xl p-4 gap-6 bg-white shadow-md caret-transparent">
+    <div className="w-full flex flex-col justify-center items-center">
+      <div className="hidden sm:flex w-full flex-row justify-between items-center border border-gray-300 rounded-xl p-4 gap-6 bg-white shadow-md caret-transparent mb-30">
         <div className="flex-[5] flex flex-col justify-center items-center space-y-4 text-center">
           <h3 className="font-semibold text-green-600 text-lg sm:text-2xl md:text-3xl lg:text-4xl">
             Your payment was successful!
@@ -48,7 +49,8 @@ const PaymentSuccess = () => {
           Continue Shopping
         </Link>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 };
 

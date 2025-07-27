@@ -41,7 +41,10 @@ const SupportForm = () => {
       className="w-full flex flex-col justify-center items-center"
     >
       <div className="w-full max-h-[200px] flex flex-col justify-start gap-2">
-        <label htmlFor="comment" className="font-semibold">
+        <label
+          htmlFor="comment"
+          className="font-semibold w-full bg-[#F4F4F4] p-2 mb-2"
+        >
           Support Message
         </label>
         <textarea

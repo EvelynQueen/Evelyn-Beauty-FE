@@ -75,7 +75,7 @@ const ShippingProfile = () => {
             <div className="flex flex-col items-center gap-1">
               <span className="text-sm text-gray-500">Payment by:</span>
               <img
-                src={assets.VNPAY}
+                src={assets.payos}
                 alt="VNPAY Logo"
                 className="h-8 opacity-80 hover:opacity-100 transition"
               />

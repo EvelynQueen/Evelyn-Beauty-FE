@@ -19,7 +19,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
           toast.error("Session expired, please login again");
           break;
         case 404:
-          toast.error("Orders not found !");
+          toast.error("Orders not found!");
           break;
         case 0:
           toast.error("Something went wrong, please login again");
@@ -31,12 +31,13 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
     } else {
       setSelectedOrder((prev) => ({
         ...prev,
-        status: "return_rejected",
+        status: "refund",
       }));
-      toast.success("Order Rejected!");
+      toast.success("Order Declined!");
       onClose();
     }
   };
+
   const approveOrder = async (orderId) => {
     const res = await handleApprovedOrder(orderId);
     if (!res.success) {
@@ -45,7 +46,7 @@ const ApprovedPopUp = ({ orderId, onClose }) => {
           toast.error("Session expired, please login again");
           break;
         case 404:
-          toast.error("Orders not found !");
+          toast.error("Orders not found!");
           break;
         case 0:
           toast.error("Something went wrong, please login again");

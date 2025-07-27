@@ -30,3 +30,7 @@ export const trackingDeliveringAPI = async (transaction) => {
   });
   return res.data;
 };
+export const refundOrderAPI = async () => {
+  const res = await axios.get("/orders/refunds");
+  return res.data;
+};

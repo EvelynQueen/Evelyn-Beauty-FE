@@ -8,12 +8,15 @@ const ProductProvider = ({ children }) => {
   const currency = "VND";
   const [products, setProducts] = useState([]);
 
-  const handleAddProduct = async (products, images) => {
+  const handleAddProduct = async (product, images) => {
     try {
-      const result = await addProductAPI(products, images);
-      setProducts((prev) => [...prev, result.product]);
+      const result = await addProductAPI(product, images);
+
+      const newProducts = result.products || [result.product];
+      setProducts((prev) => [...prev, ...newProducts]);
+
       toast.success("Product added successfully!");
-      return { success: true, product: result.product };
+      return { success: true, product: newProducts[0] };
     } catch (error) {
       toast.error(error?.message || "Failed to add product");
       return { success: false };

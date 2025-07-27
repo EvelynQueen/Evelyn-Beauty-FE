@@ -81,20 +81,16 @@ export const OrderProvider = ({ children }) => {
 
   const handleRejectOrder = async (orderId) => {
     try {
-      await approveOrderAPI(orderId, "return_requested");
+      await approveOrderAPI(orderId, "refund");
 
       setAllOrders((prev) =>
         prev.map((order) =>
-          order.orderId === orderId
-            ? { ...order, status: "return_requested" }
-            : order
+          order.orderId === orderId ? { ...order, status: "refund" } : order
         )
       );
 
       setSelectedOrder((prev) =>
-        prev?.orderId === orderId
-          ? { ...prev, status: "return_requested" }
-          : prev
+        prev?.orderId === orderId ? { ...prev, status: "refund" } : prev
       );
 
       return { success: true, status: 200 };

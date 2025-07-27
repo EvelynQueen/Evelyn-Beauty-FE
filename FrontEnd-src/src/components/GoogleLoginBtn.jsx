@@ -34,9 +34,9 @@ const GoogleLoginBtn = () => {
       login(accessToken, account.role, account.accountId);
 
       if (account.role === "OS") {
-        navigate("/owner-dashboard");
+        navigate("/all-orders");
       } else if (["SF", "AD"].includes(account.role)) {
-        navigate("/staff-dashboard");
+        navigate("/order-dashboard");
       } else {
         navigate("/");
       }

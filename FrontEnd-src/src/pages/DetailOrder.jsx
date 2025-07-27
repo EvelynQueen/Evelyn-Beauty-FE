@@ -1,3 +1,4 @@
+// ✅ DetailOrder2.js (Full version with detail rendering)
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useProduct from "../hook/useProduct";
@@ -7,20 +8,19 @@ import { IoIosArrowBack } from "react-icons/io";
 import { BsArchiveFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-const DetailOrder = () => {
+const DetailOrder2 = () => {
   const { orderId } = useParams();
   const { currency } = useProduct();
   const {
     selectedOrder,
     setSelectedOrder,
+    handleMarkOrderDone,
     handleTrackingDelivery,
     deliveryLink,
-    handleMarkOrderDone,
   } = useOrder();
 
   const [openApproved, setOpenApproved] = useState(false);
 
-  // Khôi phục selectedOrder nếu reload
   useEffect(() => {
     if (!selectedOrder) {
       const savedOrder = localStorage.getItem("selectedOrder");
@@ -30,7 +30,6 @@ const DetailOrder = () => {
     }
   }, [selectedOrder, setSelectedOrder]);
 
-  // Gọi tracking nếu có transaction_no
   useEffect(() => {
     const transactionNo = selectedOrder?.delivery?.transaction_no;
     if (transactionNo) {
@@ -55,11 +54,10 @@ const DetailOrder = () => {
 
   const renderStatus = (status) => {
     switch (status) {
-      case "return_requested":
+      case "refund":
+        return "Waiting for refund";
       case "cancel":
-        return "Declined";
-      case "return_approved":
-        return "Approved";
+        return "Cancelled";
       case "delivered":
         return "Delivered";
       case "in_transit":
@@ -87,7 +85,6 @@ const DetailOrder = () => {
         <p>Order Detail</p>
       </div>
 
-      {/* Status + Action */}
       <div className="w-full max-w-5xl flex justify-end mb-5">
         {isApprovable ? (
           <button
@@ -99,15 +96,15 @@ const DetailOrder = () => {
         ) : selectedOrder.status === "delivered" ? (
           <button
             onClick={async () => {
-              const confirm = window.confirm(
+              const confirmed = window.confirm(
                 "Are you sure this order is Done?"
               );
-              if (confirm) {
+              if (confirmed) {
                 const res = await handleMarkOrderDone(orderId);
                 if (res.success) {
                   toast.success("Order marked as done");
                 } else {
-                  toast.error("Failed to mark as done");
+                  toast.error("Failed to mark order as done");
                 }
               }
             }}
@@ -120,8 +117,9 @@ const DetailOrder = () => {
             className={`inline-block px-4 py-2 rounded-full font-semibold ${
               selectedOrder.status === "done"
                 ? "bg-green-100 text-green-700"
-                : selectedOrder.status === "return_requested" ||
-                  selectedOrder.status === "cancel"
+                : selectedOrder.status === "refund"
+                ? "bg-orange-100 text-orange-700"
+                : selectedOrder.status === "cancel"
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-200 text-blue-600"
             }`}
@@ -214,13 +212,6 @@ const DetailOrder = () => {
         </div>
       </div>
 
-      {openApproved && (
-        <ApprovedPopUp
-          orderId={orderId}
-          onClose={() => setOpenApproved(false)}
-        />
-      )}
-
       {/* Product List */}
       <div className="w-full flex flex-col items-center bg-white text-black px-4">
         <div className="w-full max-w-5xl flex items-center gap-4 py-3 border-b border-gray-300 font-semibold text-base text-gray-700">
@@ -259,8 +250,15 @@ const DetailOrder = () => {
           </div>
         ))}
       </div>
+
+      {openApproved && (
+        <ApprovedPopUp
+          orderId={orderId}
+          onClose={() => setOpenApproved(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default DetailOrder;
+export default DetailOrder2;

@@ -61,9 +61,10 @@ const DetailOrder2 = () => {
 
   const renderStatus = (status) => {
     switch (status) {
-      case "return_requested":
+      case "refund":
+        return "Waiting for refund ";
       case "cancel":
-        return "Declined";
+        return "Cancel";
       case "delivered":
         return "Delivered";
       case "in_transit":
@@ -123,8 +124,9 @@ const DetailOrder2 = () => {
             className={`inline-block px-4 py-2 rounded-full font-semibold ${
               selectedOrder.status === "done"
                 ? "bg-green-100 text-green-700"
-                : selectedOrder.status === "return_requested" ||
-                  selectedOrder.status === "cancel"
+                : selectedOrder.status === "refund"
+                ? "bg-orange-100 text-orange-700"
+                : selectedOrder.status === "cancel"
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-200 text-blue-600"
             }`}

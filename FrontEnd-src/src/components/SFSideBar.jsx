@@ -24,21 +24,6 @@ const SFSideBar = () => {
         <ul className="w-full px-4 flex flex-col gap-4 sm:text-sm md:text-base ">
           <li>
             <NavLink
-              to="/staff-dashboard"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded ${
-                  isActive
-                    ? "bg-white/20"
-                    : " hover:bg-gray-700 transition-colors"
-                }`
-              }
-            >
-              <IoHomeOutline /> <span>Home</span>
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
               to="/order-dashboard"
               className={({ isActive }) =>
                 `flex items-center gap-3 p-2 rounded ${

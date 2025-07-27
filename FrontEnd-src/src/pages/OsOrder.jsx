@@ -105,6 +105,7 @@ const OsOrder = () => {
               <option value="in_transit">Waiting</option>
               <option value="delivered">Delivering</option>
               <option value="done">Done</option>
+              <option value="refund">Waiting for refund</option>
             </select>
           </div>
         </div>
@@ -175,8 +176,10 @@ const OsOrder = () => {
                   <td className="border border-gray-200 px-6 py-4">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        order.status === "return_requested" ||
-                        order.status === "cancel"
+                        order.status === "refund"
+                          ? "bg-orange-100 text-orange-700"
+                          : order.status === "return_requested" ||
+                            order.status === "cancel"
                           ? "bg-red-100 text-red-700"
                           : order.status === "return_approved"
                           ? "bg-sky-100 text-sky-700"
@@ -189,8 +192,10 @@ const OsOrder = () => {
                           : "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {order.status === "return_requested" ||
-                      order.status === "cancel"
+                      {order.status === "refund"
+                        ? "Waiting for refund"
+                        : order.status === "return_requested" ||
+                          order.status === "cancel"
                         ? "Declined"
                         : order.status === "return_approved"
                         ? "Packing & Delivering"
