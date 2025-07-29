@@ -80,50 +80,54 @@ const PromotionProgram = () => {
 
           {/* Body */}
           <div className="flex flex-col">
-            {promotions.map((promo) => (
-              <div
-                key={promo.programId}
-                // Thay đổi thành grid-cols-10
-                className="grid grid-cols-1 md:grid-cols-10 gap-4 px-6 py-3 items-center border-t border-gray-200 hover:bg-gray-50 text-sm"
-              >
-                <div className="md:col-span-1 font-semibold text-blue-600 hover:underline cursor-pointer truncate">
-                  <span className="md:hidden font-bold mr-2 text-gray-600">
-                    ID:
-                  </span>
-                  {promo.programId}
+            {promotions.map((promo) =>
+              promo.programId !== "PG000" ? (
+                <div
+                  key={promo.programId}
+                  // Thay đổi thành grid-cols-10
+                  className="grid grid-cols-1 md:grid-cols-10 gap-4 px-6 py-3 items-center border-t border-gray-200 hover:bg-gray-50 text-sm"
+                >
+                  <div className="md:col-span-1 font-semibold text-blue-600 hover:underline cursor-pointer truncate">
+                    <span className="md:hidden font-bold mr-2 text-gray-600">
+                      ID:
+                    </span>
+                    {promo.programId}
+                  </div>
+                  <div className="md:col-span-2 text-gray-900 font-medium truncate">
+                    {promo.name}
+                  </div>
+                  <div className="md:col-span-1 text-gray-700">
+                    {formatValue(promo.condition1, "VND")}
+                  </div>
+                  {/* THÊM DỮ LIỆU CHO CỘT MỚI */}
+                  <div className="md:col-span-1 text-gray-700">
+                    {promo.condition2 || "-"}
+                  </div>
+                  <div className="md:col-span-1 font-bold text-green-600">
+                    {formatValue(promo.value, "PERCENT")}
+                  </div>
+                  <div className="md:col-span-1 text-gray-600">
+                    {formatDate(promo.startDate)}
+                  </div>
+                  <div className="md:col-span-1 text-gray-600">
+                    {formatDate(promo.endDate)}
+                  </div>
+                  <div className="md:col-span-1 text-gray-700 truncate">
+                    {promo.accountId}
+                  </div>
+                  <div className="md:col-span-1 text-center">
+                    <button
+                      onClick={() => handleDelete(promo.programId)}
+                      className="font-semibold text-red-500 hover:text-red-700 transition-colors hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div className="md:col-span-2 text-gray-900 font-medium truncate">
-                  {promo.name}
-                </div>
-                <div className="md:col-span-1 text-gray-700">
-                  {formatValue(promo.condition1, "VND")}
-                </div>
-                {/* THÊM DỮ LIỆU CHO CỘT MỚI */}
-                <div className="md:col-span-1 text-gray-700">
-                  {promo.condition2 || "-"}
-                </div>
-                <div className="md:col-span-1 font-bold text-green-600">
-                  {formatValue(promo.value, "PERCENT")}
-                </div>
-                <div className="md:col-span-1 text-gray-600">
-                  {formatDate(promo.startDate)}
-                </div>
-                <div className="md:col-span-1 text-gray-600">
-                  {formatDate(promo.endDate)}
-                </div>
-                <div className="md:col-span-1 text-gray-700 truncate">
-                  {promo.accountId}
-                </div>
-                <div className="md:col-span-1 text-center">
-                  <button
-                    onClick={() => handleDelete(promo.programId)}
-                    className="font-semibold text-red-500 hover:text-red-700 transition-colors hover:underline"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+              ) : (
+                ""
+              )
+            )}
           </div>
         </div>
       )}
